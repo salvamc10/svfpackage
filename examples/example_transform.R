@@ -1,11 +1,14 @@
 # Evaluar una observación menor que el valor del nodo del grid
-transformation(2, 5)
+result <- transformation(2, 5)
+cat("Resultado de la transformación:", result, "\n")
 # Output: -1
 
 # Evaluar una observación igual al valor del nodo del grid
-transformation(3, 3)
+result <- transformation(3, 3)
+cat("Resultado de la transformación:", result, "\n")
 # Output: 0
 
 # Evaluar una observación mayor que el valor del nodo del grid
-transformation(7, 4)
+result <- transformation(7, 4)
+cat("Resultado de la transformación:", result, "\n")
 # Output: 1

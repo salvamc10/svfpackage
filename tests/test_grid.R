@@ -1,40 +1,34 @@
-source("~/Desktop/svfpackage/R/grid.R")
+source("~/svfpackage/R/grid.R")
 
 # Usar el dataset de ejemplo
-data <- read.table("~/Desktop/svfpackage/data/datos.txt", header = TRUE, sep = ";")
+data <- read.table("~/svfpackage/data/datos.txt", header = TRUE, sep = ";")
 
 # Definir listas de inputs, outputs y la cantidad de particiones
 inputs <- c("x1", "x2")
 outputs <- c("y1")
-d <- c(2)
+d <- 2
 
-# Crear un objeto GRID
-grid <- GRID(data = data, inputs = inputs, outputs = outputs, d = d)
+# Inicializar la cuadrícula
+grid_instance <- initialize_GRID(data, inputs, outputs, d)
 
 # Evaluar una observación menor que el valor del nodo del grid
-transformation(2, 5)
+result <- transformation(2, 5)
+cat("Resultado de la transformación:", result, "\n")
 # Output: -1
 
 # Evaluar una observación igual al valor del nodo del grid
-transformation(3, 3)
+result <- transformation(3, 3)
+cat("Resultado de la transformación:", result, "\n")
 # Output: 0
 
 # Evaluar una observación mayor que el valor del nodo del grid
-transformation(7, 4)
+result <- transformation(7, 4)
+cat("Resultado de la transformación:", result, "\n")
 # Output: 1
 
-# Generar el grid
-x1_grid <- seq(min(data$x1), max(data$x1), length.out = d[1])
-expand_grid <- function(...) expand.grid(...)
-X_grid <- expand_grid(x1_grid)
-
-# Graficar el grid
-plot(data$x1, data$x2, col = 'blue', xlab = 'x1', ylab = 'x2', main = 'Grid', xlim = range(data$x1), ylim = range(data$x2))
-grid()
-
-# Agregar etiquetas a cada punto
-text(data$x1, data$x2, labels = paste("(", round(data$x1, 2), ",", round(data$x2, 2), ")"), pos = 3)
-
-# Buscar una observación en el grid
-search_dmu(grid, c(2, 5))
-
+# Ejemplo de uso de la función search_dmu
+grid_instance$knot_list <- list(list(1, 2.5, 4), list(1, 2, 3))
+dmu <- list(2.5, 2)
+position <- search_dmu(grid_instance, dmu)
+position_string <- paste(position, collapse = ", ")
+cat("Posición en el grid:", position_string, "\n")

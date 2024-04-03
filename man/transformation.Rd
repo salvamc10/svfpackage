@@ -2,31 +2,24 @@
 % Please edit documentation in R/grid.R
 \name{transformation}
 \alias{transformation}
-\title{Función para realizar una transformación}
+\title{Transforma un valor basado en un nodo en la cuadrícula.}
 \usage{
 transformation(x_i, t_k)
 }
 \arguments{
-\item{x_i}{Valor de la observación a evaluar.}
+\item{x_i}{El valor que se va a transformar.}
 
-\item{t_k}{Valor del nodo con el que se quiere comparar.}
+\item{t_k}{El nodo en la cuadrícula.}
 }
 \value{
--1 si x_i < t_k, 0 si x_i == t_k, 1 si x_i > t_k.
+Retorna -1 si x_i es menor que t_k, 0 si son iguales, y 1 si x_i es mayor que t_k.
 }
 \description{
-Esta función evalúa si el valor de una observación es mayor, igual o menor que el valor de un nodo del grid.
+Esta función toma un valor y lo compara con un nodo en la cuadrícula.
+Dependiendo de la relación entre el valor y el nodo, se devuelve -1, 0 o 1.
 }
 \examples{
-# Evaluar una observación menor que el valor del nodo del grid
 transformation(2, 5)
-# Output: -1
-
-# Evaluar una observación igual al valor del nodo del grid
 transformation(3, 3)
-# Output: 0
-
-# Evaluar una observación mayor que el valor del nodo del grid
 transformation(7, 4)
-# Output: 1
 }

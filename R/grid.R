@@ -1,54 +1,15 @@
-setClass(
-  "GRID",
-  representation(
-    data = "data.frame",
-    inputs = "character",
-    outputs = "character",
-    d = "numeric",
-    data_grid = "NULL",
-    knot_list = "list"
-  )
-)
-
-#' Construye un objeto de clase GRID.
+#' Transforma un valor basado en un nodo en la cuadrícula.
 #'
-#' Esta función crea un objeto de clase GRID que encapsula un conjunto de datos, las variables de entrada y salida,
-#' así como la configuración del grid utilizado para dividir el espacio de entrada.
+#' Esta función toma un valor y lo compara con un nodo en la cuadrícula.
+#' Dependiendo de la relación entre el valor y el nodo, se devuelve -1, 0 o 1.
 #'
-#' @importFrom methods new
-#'
-#' @param data Un data.frame que contiene los datos.
-#' @param inputs Un vector de caracteres que especifica las variables de entrada.
-#' @param outputs Un vector de caracteres que especifica las variables de salida.
-#' @param d Un vector numérico que especifica el número de particiones en cada dimensión de las variables de entrada.
-#'
-#' @return Un objeto de clase GRID.
-#'
-#' @example examples/examples_grid.R
-#'
-#' @export
-GRID <- function(data, inputs, outputs, d) {
-  grid <- new("GRID",
-              data = data,
-              inputs = inputs,
-              outputs = outputs,
-              d = d,
-              data_grid = NULL,
-              knot_list = list())
-  return(grid)
-}
-
-#' Función para realizar una transformación
-#'
-#' Esta función evalúa si el valor de una observación es mayor, igual o menor que el valor de un nodo del grid.
-#'
-#' @param x_i Valor de la observación a evaluar.
-#' @param t_k Valor del nodo con el que se quiere comparar.
-#'
-#' @return -1 si x_i < t_k, 0 si x_i == t_k, 1 si x_i > t_k.
-#'
-#' @example  examples/example_transform.R
-#'
+#' @param x_i El valor que se va a transformar.
+#' @param t_k El nodo en la cuadrícula.
+#' @return Retorna -1 si x_i es menor que t_k, 0 si son iguales, y 1 si x_i es mayor que t_k.
+#' @examples
+#' transformation(2, 5)
+#' transformation(3, 3)
+#' transformation(7, 4)
 #' @export
 transformation <- function(x_i, t_k) {
   z <- x_i - t_k
@@ -61,34 +22,56 @@ transformation <- function(x_i, t_k) {
   }
 }
 
-#' Función para buscar una observación en el grid
+#' Función para inicializar la cuadrícula.
 #'
-#' Esta función devuelve la celda en la que se encuentra una observación en el grid.
+#' Esta función inicializa una cuadrícula con los datos, variables de entrada,
+#' variables de salida y la cantidad de dimensiones especificadas.
 #'
-#' @param grid Un objeto de clase GRID que define la estructura del grid.
-#' @param dmu Un vector que representa la observación a buscar en el grid.
-#' @return Un vector con la posición de la observación en el grid.
-#'
-#' @example examples/example_search.R
-#'
+#' @param data Los datos para construir la cuadrícula.
+#' @param inputs Los nombres de las variables de entrada.
+#' @param outputs Los nombres de las variables de salida.
+#' @param d La cantidad de dimensiones de la cuadrícula.
+#' @return Retorna una lista que representa la cuadrícula inicializada.
 #' @export
-search_dmu <- function(grid, dmu) {
-  cell <- list()
-  r <- t(grid@knot_list)
-  for (l in seq_along(grid@knot_list)) {
-    for (m in seq_along(grid@knot_list[[l]])) {
-      trans <- transformation(dmu[l], r[m, l])
-      if (trans < 0) {
-        cell <- c(cell, m - 1)
-        break
-      } else if (trans == 0) {
-        cell <- c(cell, m)
-        break
-      } else if (trans > 0 && m == length(grid@knot_list[[l]])) {
-        cell <- c(cell, m)
-        break
+initialize_GRID <- function(data, inputs, outputs, d) {
+  list(
+    data = data,
+    inputs = inputs,
+    outputs = outputs,
+    d = d,
+    data_grid = NULL,
+    knot_list = NULL
+  )
+}
+
+#' Función para buscar el índice de la celda en la cuadrícula asociada a un punto dado.
+#'
+#' Esta función busca el índice de la celda en la cuadrícula asociada a un punto
+#' dado utilizando el método de transformación definido en la función \code{transformation}.
+#'
+#' @param grid_instance La instancia de la cuadrícula.
+#' @param dmu La lista de valores que representan un punto en la cuadrícula.
+#' @return Retorna una lista con los índices de celda correspondientes a las dimensiones de la cuadrícula.
+#' @export
+search_dmu <- function(grid_instance, dmu) {
+  cell <- vector("list", length(dmu))
+  r <- grid_instance$knot_list
+  for (l in seq_along(grid_instance$knot_list)) {
+    x_i <- dmu[[l]]
+    t_k <- unlist(r[[l]])
+    trans <- sapply(t_k, function(tk) transformation(x_i, tk))
+    m <- which(trans == 0)[1]
+    if (is.null(m)) {
+      m <- which.max(trans < 0)
+      if (is.null(m)) {
+        m <- length(trans)
+      } else {
+        m <- m - 1
       }
+    } else {
+      m <- m - 1
     }
+    cell[[l]] <- m
   }
   return(cell)
 }

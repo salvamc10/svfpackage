@@ -9,8 +9,6 @@ Description: Support Vector Frontier (see Valero-Carreras et al., 2022) (SVF) is
     used for the estimation of production functions..
 License: MIT + file LICENSE
 Encoding: UTF-8
-Imports:
-  methods
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Depends: 

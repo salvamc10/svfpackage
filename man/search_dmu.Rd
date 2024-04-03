@@ -2,28 +2,19 @@
 % Please edit documentation in R/grid.R
 \name{search_dmu}
 \alias{search_dmu}
-\title{Función para buscar una observación en el grid}
+\title{Función para buscar el índice de la celda en la cuadrícula asociada a un punto dado.}
 \usage{
-search_dmu(grid, dmu)
+search_dmu(grid_instance, dmu)
 }
 \arguments{
-\item{grid}{Un objeto de clase GRID que define la estructura del grid.}
+\item{grid_instance}{La instancia de la cuadrícula.}
 
-\item{dmu}{Un vector que representa la observación a buscar en el grid.}
+\item{dmu}{La lista de valores que representan un punto en la cuadrícula.}
 }
 \value{
-Un vector con la posición de la observación en el grid.
+Retorna una lista con los índices de celda correspondientes a las dimensiones de la cuadrícula.
 }
 \description{
-Esta función devuelve la celda en la que se encuentra una observación en el grid.
-}
-\examples{
-data <- data.frame(x1 = c(1, 2, 3), x2 = c(4, 5, 6), y1 = c(7, 8, 9))
-inputs <- c("x1", "x2")
-outputs <- c("y1")
-d <- c(2, 2)
-grid <- GRID(data = data, inputs = inputs, outputs = outputs, d = d)
-
-# Buscar una observación en el grid
-search_dmu(grid, c(2, 5))
+Esta función busca el índice de la celda en la cuadrícula asociada a un punto
+dado utilizando el método de transformación definido en la función \code{transformation}.
 }
