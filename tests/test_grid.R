@@ -1,5 +1,7 @@
 source("~/svfpackage/R/grid.R")
 
+library(ggplot2)
+
 # Usar el dataset de ejemplo
 data <- read.table("~/svfpackage/data/datos.txt", header = TRUE, sep = ";")
 
@@ -28,7 +30,7 @@ cat("Resultado de la transformación:", result, "\n")
 
 # Ejemplo de uso de la función search_dmu
 grid_instance$knot_list <- list(list(1, 2.5, 4), list(1, 2, 3))
-dmu <- list(2.5, 2)
+dmu <- list(2.5, 1)
 position <- search_dmu(grid_instance, dmu)
 position_string <- paste(position, collapse = ", ")
 cat("Posición en el grid:", position_string, "\n")
@@ -55,11 +57,11 @@ plot_GRID <- function(grid_instance, data, dmu) {
     # Añadir la DMU
     geom_point(data = dmu_df, aes(x = x, y = y), color = "red", size = 3) +
     # Añadir líneas verticales y horizontales para el grid
-    geom_vline(xintercept = x_grid, linetype = "dashed", color = "blue") +
-    geom_hline(yintercept = y_grid, linetype = "dashed", color = "blue") +
+    geom_vline(xintercept = x_grid, linetype = "dotted", color = "blue") +
+    geom_hline(yintercept = y_grid, linetype = "dotted", color = "blue") +
     # Especificar límites del gráfico y ajustar la separación en los ejes x e y
     coord_cartesian(xlim = c(0, max(x_grid)), ylim = c(0, 4)) +
-    scale_x_continuous(expand = expansion(add = c(0, 1))) +
+    scale_x_continuous(expand = expansion(add = c(0, 0.1))) +
     scale_y_continuous(expand = expansion(add = c(0, 0.1))) +
     # Agregar borde alrededor del gráfico
     theme(

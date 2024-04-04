@@ -19,7 +19,18 @@ Esta función toma un valor y lo compara con un nodo en la cuadrícula.
 Dependiendo de la relación entre el valor y el nodo, se devuelve -1, 0 o 1.
 }
 \examples{
-transformation(2, 5)
-transformation(3, 3)
-transformation(7, 4)
+# Evaluar una observación menor que el valor del nodo del grid
+result <- transformation(2, 5)
+cat("Resultado de la transformación:", result, "\n")
+# Output: -1
+
+# Evaluar una observación igual al valor del nodo del grid
+result <- transformation(3, 3)
+cat("Resultado de la transformación:", result, "\n")
+# Output: 0
+
+# Evaluar una observación mayor que el valor del nodo del grid
+result <- transformation(7, 4)
+cat("Resultado de la transformación:", result, "\n")
+# Output: 1
 }

@@ -5,11 +5,11 @@
 #'
 #' @param x_i El valor que se va a transformar.
 #' @param t_k El nodo en la cuadrícula.
+#'
 #' @return Retorna -1 si x_i es menor que t_k, 0 si son iguales, y 1 si x_i es mayor que t_k.
-#' @examples
-#' transformation(2, 5)
-#' transformation(3, 3)
-#' transformation(7, 4)
+#'
+#' @example  examples/example_transform.R
+#'
 #' @export
 transformation <- function(x_i, t_k) {
   z <- x_i - t_k
@@ -22,16 +22,20 @@ transformation <- function(x_i, t_k) {
   }
 }
 
-#' Función para inicializar la cuadrícula.
+#' Función para inicializar el GRID.
 #'
-#' Esta función inicializa una cuadrícula con los datos, variables de entrada,
+#' Esta función inicializa un GRID con los datos, variables de entrada,
 #' variables de salida y la cantidad de dimensiones especificadas.
 #'
-#' @param data Los datos para construir la cuadrícula.
+#' @param data Los datos para construir el GRID
 #' @param inputs Los nombres de las variables de entrada.
 #' @param outputs Los nombres de las variables de salida.
-#' @param d La cantidad de dimensiones de la cuadrícula.
-#' @return Retorna una lista que representa la cuadrícula inicializada.
+#' @param d La cantidad de dimensiones del GRID.
+#'
+#' @return Retorna un objeto de clase "grid".
+#'
+#' @example examples/examples_grid.R
+#'
 #' @export
 initialize_GRID <- function(data, inputs, outputs, d) {
   list(
@@ -42,6 +46,8 @@ initialize_GRID <- function(data, inputs, outputs, d) {
     data_grid = NULL,
     knot_list = NULL
   )
+  class(grid) <- "grid"
+  return(grid)
 }
 
 #' Función para buscar el índice de la celda en la cuadrícula asociada a un punto dado.
@@ -51,7 +57,11 @@ initialize_GRID <- function(data, inputs, outputs, d) {
 #'
 #' @param grid_instance La instancia de la cuadrícula.
 #' @param dmu La lista de valores que representan un punto en la cuadrícula.
+#'
 #' @return Retorna una lista con los índices de celda correspondientes a las dimensiones de la cuadrícula.
+#'
+#' @example examples/example_search.R
+#'
 #' @export
 search_dmu <- function(grid_instance, dmu) {
   cell <- vector("list", length(dmu))
