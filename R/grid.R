@@ -13,13 +13,11 @@
 #' @export
 transformation <- function(x_i, t_k) {
   z <- x_i - t_k
-  if (z < 0) {
-    return(-1)
-  } else if (z == 0) {
-    return(0)
-  } else {
-    return(1)
-  }
+  result <- rep(NA, length(z))
+  result[z < 0] <- -1
+  result[z == 0] <- 0
+  result[z > 0] <- 1
+  return(result)
 }
 
 #' Función para inicializar la cuadrícula.
