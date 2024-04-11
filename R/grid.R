@@ -1,4 +1,20 @@
-# Definir el constructor de la clase GRID
+#' Clase GRID para modelado SVF
+#'
+#' Esta clase representa un grid sobre el que se realiza el modelo SVF.
+#' Un grid es una partición del espacio de los inputs dividido por celdas.
+#'
+#' @name GRID
+#'
+#' @field data DataFrame con el conjunto de datos sobre los que se construye el grid.
+#' @field inputs Vector de nombres de los inputs.
+#' @field outputs Vector de nombres de los outputs.
+#' @field d Vector con el número de particiones en las que se divide el grid.
+#' @field data_grid Grid de datos, inicialmente NULL.
+#' @field knot_list Lista de nodos del grid, inicialmente NULL.
+#'
+#' @example examples/examples_grid.R
+#'
+#' @export
 GRID <- function(data, inputs, outputs, d) {
   structure(list(
     data = data,
@@ -10,7 +26,19 @@ GRID <- function(data, inputs, outputs, d) {
   ), class = "GRID")
 }
 
-# Método search_dmu para objetos de clase GRID en R
+#' Buscar DMU en GRID
+#'
+#' Este método busca una DMU específica en el grid y devuelve la celda
+#' en la que se encuentra dicha observación.
+#'
+#' @param grid Objeto de la clase GRID.
+#' @param dmu Vector con la observación a buscar en el grid.
+#'
+#' @return Vector con la posición de la observación en el grid.
+#'
+#' @example examples/example_search.R
+#'
+#' @export
 search_dmu.GRID <- function(grid, dmu) {
   cell <- vector("list", length(dmu))
   r <- grid$knot_list
@@ -30,7 +58,20 @@ search_dmu.GRID <- function(grid, dmu) {
   return(unlist(cell))
 }
 
-# Método de transformación
+#' Transformación de valores en el GRID
+#'
+#' Esta función evalúa si el valor de una observación es mayor, igual,
+#' o menor que el valor de un nodo en el grid. Devuelve 1 si es mayor,
+#' 0 si es igual, y -1 si es menor.
+#'
+#' @param x_i Valor de la observación a evaluar.
+#' @param t_k Valor del nodo con el que se compara.
+#'
+#' @return Resultado de la comparación: 1, 0, -1.
+#'
+#' @example examples/example_transform.R
+#'
+#' @export
 transformation <- function(x_i, t_k) {
   z <- x_i - t_k
   if (z < 0) {

@@ -1,13 +1,32 @@
 source("~/Documents/GitHub/svfpackage/R/grid.R")
 
-# Constructor SVFGrid
+#' Constructor para la clase SVFGrid
+#'
+#' Esta función crea una instancia de la clase SVFGrid, la cual es una
+#' extensión de la clase GRID con funcionalidades adicionales específicas
+#' para el manejo de grids en el contexto de análisis SVF.
+#'
+#' @param data DataFrame con los datos sobre los cuales se construirá el grid.
+#' @param inputs Vector con los nombres de las columnas que serán tratadas como inputs.
+#' @param outputs Vector con los nombres de las columnas que serán tratadas como outputs.
+#' @param d Entero o vector de enteros que especifica el número de divisiones por dimensión en el grid.
+#' @return Un objeto de clase SVFGrid.
+#' @export
 SVFGrid <- function(data, inputs, outputs, d) {
   grid <- list(data = data, inputs = inputs, outputs = outputs, d = d, df_grid = data.frame(), data_grid = data.frame())
   class(grid) <- c("SVFGrid", "GRID")
   return(grid)
 }
 
-# Método create_grid para SVFGrid
+#' Crear grid para SVFGrid
+#'
+#' Este método crea un grid basado en los datos y el parámetro d proporcionados
+#' al constructor. Este grid es una representación de los datos en un espacio
+#' dividido en celdas definidas por el parámetro d.
+#'
+#' @param grid Objeto SVFGrid sobre el cual operar.
+#' @return El objeto SVFGrid con el grid creado.
+#' @export
 create_grid.SVFGrid <- function(grid) {
   x <- grid$data[, grid$inputs]
   n_dim <- ncol(x)
@@ -35,7 +54,15 @@ create_grid.SVFGrid <- function(grid) {
   return(grid)
 }
 
-# Función para calcular phi para una celda específica
+#' Calcular phi para una celda específica en SVFGrid
+#'
+#' Esta función calcula y retorna el valor de phi para una celda específica del
+#' grid, basado en los datos del grid y la posición de la celda.
+#'
+#' @param grid Objeto SVFGrid sobre el cual operar.
+#' @param cell Vector que especifica la posición de la celda en el grid.
+#' @return Una lista que contiene los valores de phi para la celda especificada.
+#' @export
 calculate_dmu_phi <- function(grid, cell) {
   df_grid <- grid$df_grid
   phi <- numeric(length = nrow(df_grid$id_cells))
@@ -54,6 +81,15 @@ calculate_dmu_phi <- function(grid, cell) {
   return(phi_list)
 }
 
+#' Calcular el dataframe de grid para SVFGrid
+#'
+#' Este método calcula y añade información adicional al dataframe de grid
+#' asociado a un objeto SVFGrid. Esta información incluye los valores de phi
+#' para cada celda del grid y las celdas contiguas a cada celda.
+#'
+#' @param grid Objeto SVFGrid sobre el cual operar.
+#' @return El objeto SVFGrid con el dataframe de grid actualizado.
+#' @export
 calculate_df_grid <- function(grid) {
   n <- nrow(grid$df_grid$id_cells)
   phi_list <- vector("list", n)
@@ -72,7 +108,15 @@ calculate_df_grid <- function(grid) {
   return(grid)
 }
 
-# Busca celdas contiguas
+#' Buscar celdas contiguas en SVFGrid
+#'
+#' Esta función identifica y retorna las celdas contiguas a una celda especificada
+#' en el grid. Las celdas contiguas son aquellas que comparten al menos un borde
+#' o punto con la celda especificada.
+#'
+#' @param cell Vector que especifica la posición de la celda en el grid.
+#' @return Una lista de celdas contiguas a la especificada.
+#' @export
 search_contiguous_cell <- function(cell) {
   con_c_list <- list()
   for (dim in seq_along(cell)) {
@@ -86,15 +130,3 @@ search_contiguous_cell <- function(cell) {
 
   return(con_c_list)
 }
-
-# Crear un conjunto de datos de ejemplo
-data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(1, 3, 1, 2), y1 = c(2, 4, 3, 5))
-
-# Definir listas de inputs, outputs y la cantidad de particiones
-inputs <- c("x1", "x2")
-outputs <- c("y1")
-d <- 2
-
-# Crear la instancia de la clase SVFGrid y llamar al método create_grid
-grid_obj <- SVFGrid(data, inputs, outputs, d)
-grid_obj <- create_grid.SVFGrid(grid_obj)
