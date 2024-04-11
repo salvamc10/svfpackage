@@ -5,10 +5,10 @@
 #'
 #' @name GRID
 #'
-#' @field data DataFrame con el conjunto de datos sobre los que se construye el grid.
-#' @field inputs Vector de nombres de los inputs.
-#' @field outputs Vector de nombres de los outputs.
-#' @field d Vector con el número de particiones en las que se divide el grid.
+#' @param data DataFrame con el conjunto de datos sobre los que se construye el grid.
+#' @param inputs Vector de nombres de los inputs.
+#' @param outputs Vector de nombres de los outputs.
+#' @param d Vector con el número de particiones en las que se divide el grid.
 #' @field data_grid Grid de datos, inicialmente NULL.
 #' @field knot_list Lista de nodos del grid, inicialmente NULL.
 #'
@@ -40,22 +40,29 @@ GRID <- function(data, inputs, outputs, d) {
 #'
 #' @export
 search_dmu.GRID <- function(grid, dmu) {
-  cell <- vector("list", length(dmu))
-  r <- grid$knot_list
-  for (l in seq_along(grid$knot_list)) {
-    x_i <- dmu[l]
-    t_k <- unlist(r[[l]])
-    trans <- sapply(t_k, function(tk) transformation(x_i, tk))
-    m <- which(trans == 0)[1]
-    if (is.na(m)) {
-      m <- which.max(trans < 0)
-      if (is.na(m)) {
-        m <- length(trans)
+  r <- lapply(grid$knot_list, unlist)
+  cell <- numeric(length(dmu))
+  for (l in seq_along(dmu)) {
+    encontrado <- FALSE
+    for (m in seq_along(r[[l]])) {
+      trans <- transformation(dmu[l], r[[l]][m])
+      if (trans < 0) {
+        cell[l] <- m - 1
+        encontrado <- TRUE
+        break
+      } else if (trans == 0) {
+        cell[l] <- m
+        encontrado <- TRUE
+        break
       }
     }
-    cell[[l]] <- m - 1
+    if (!encontrado) {
+      cell[l] <- length(r[[l]])
+    }
   }
-  return(unlist(cell))
+  cell <- cell - 1
+
+  return(cell)
 }
 
 #' Transformación de valores en el GRID

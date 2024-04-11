@@ -6,6 +6,15 @@
 \usage{
 GRID(data, inputs, outputs, d)
 }
+\arguments{
+\item{data}{DataFrame con el conjunto de datos sobre los que se construye el grid.}
+
+\item{inputs}{Vector de nombres de los inputs.}
+
+\item{outputs}{Vector de nombres de los outputs.}
+
+\item{d}{Vector con el número de particiones en las que se divide el grid.}
+}
 \description{
 Esta clase representa un grid sobre el que se realiza el modelo SVF.
 Un grid es una partición del espacio de los inputs dividido por celdas.
@@ -13,14 +22,6 @@ Un grid es una partición del espacio de los inputs dividido por celdas.
 \section{Fields}{
 
 \describe{
-\item{\code{data}}{DataFrame con el conjunto de datos sobre los que se construye el grid.}
-
-\item{\code{inputs}}{Vector de nombres de los inputs.}
-
-\item{\code{outputs}}{Vector de nombres de los outputs.}
-
-\item{\code{d}}{Vector con el número de particiones en las que se divide el grid.}
-
 \item{\code{data_grid}}{Grid de datos, inicialmente NULL.}
 
 \item{\code{knot_list}}{Lista de nodos del grid, inicialmente NULL.}

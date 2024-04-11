@@ -27,7 +27,7 @@ for (i in seq_along(grid_obj$knot_index)) {
 }
 
 # Realizar una búsqueda en el grid para una observación
-dmu <- c(2.5, 1)
+dmu <- c(3, 4)
 position <- search_dmu.GRID(grid_obj, dmu)
 print(paste("Posición en el grid: (", paste(position, collapse = ", "), ")", sep = ""))
 
