@@ -2,6 +2,7 @@
 
 export(GRID)
 export(SVFGrid)
+export(calculate_data_grid)
 export(calculate_df_grid)
 export(calculate_dmu_phi)
 export(create_grid.SVFGrid)

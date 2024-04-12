@@ -1,7 +1,7 @@
 source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
 
-# Crear un conjunto de datos de ejemplo
-data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(1, 3, 1, 2), y1 = c(2, 4, 3, 5))
+# Usar datos de prueba
+data <- read.table("~/svfpackage/data/datos.txt", header = TRUE, sep = ";")
 
 # Definir listas de inputs, outputs y la cantidad de particiones
 inputs <- c("x1", "x2")
@@ -43,17 +43,27 @@ print("Vector phi para la celda dada:")
 print(phi_list)
 
 print_df_grid <- function(df_grid) {
-  print("df_grid completo:")
-  # Crear un data.frame temporal para imprimir
+  print("DF grid completo:")
   temp_df <- data.frame(
     id_cell = apply(df_grid$id_cells, 1, function(row) paste0("(", paste(row, collapse = ", "), ")")),
     value = apply(df_grid$values, 1, function(row) paste0("(", paste(sprintf("%.1f", row), collapse = ", "), ")")),
-    phi = sapply(df_grid$phi, function(phi) paste(phi[[1]], collapse = " ")),
+    phi = sapply(df_grid$phi, function(phi) sprintf("[%s]", paste(phi[[1]], collapse=" "))),
     c_cells = sapply(df_grid$c_cells, function(cells) if (length(cells) > 0) paste(sapply(cells, function(cell) paste0("(", paste(cell, collapse = ", "), ")")), collapse = " ") else "[]")
   )
-
   print(temp_df)
 }
 
 print_df_grid(grid_obj$df_grid)
 
+print_data_grid <- function(data_grid) {
+  print("Data grid completo:")
+  temp_df <- data.frame(
+    x1 = data_grid$x1,
+    x2 = data_grid$x2,
+    phi = sapply(data_grid$phi, function(phi) sprintf("[%s]", paste(phi[[1]], collapse = " "))),
+    c_cells = sapply(data_grid$c_cells, function(cells) if (length(cells) > 0) paste(sapply(cells, function(cell) paste0("(", paste(cell, collapse = ", "), ")")), collapse = " ") else "[]")
+  )
+  print(temp_df)
+}
+
+print_data_grid(grid_obj$data_grid)

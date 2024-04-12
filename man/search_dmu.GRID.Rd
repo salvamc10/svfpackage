@@ -33,7 +33,7 @@ d <- 2
 grid_instance <- initialize_GRID(data, inputs, outputs, d)
 
 # Ejemplo de uso de la función search_dmu
-grid_instance$knot_list <- list(list(1, 2.5, 4), list(1, 2, 3))
+grid_instance$knot_list <- list(list(1, 2, 3), list(4, 5, 6))
 dmu <- list(2, 6)
 position <- search_dmu(grid_instance, dmu)
 position_string <- paste(position, collapse = ", ")

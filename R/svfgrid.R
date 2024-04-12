@@ -10,7 +10,11 @@ source("~/Documents/GitHub/svfpackage/R/grid.R")
 #' @param inputs Vector con los nombres de las columnas que serán tratadas como inputs.
 #' @param outputs Vector con los nombres de las columnas que serán tratadas como outputs.
 #' @param d Entero o vector de enteros que especifica el número de divisiones por dimensión en el grid.
+#'
 #' @return Un objeto de clase SVFGrid.
+#'
+#' @example examples/example_svfgrid.R
+#'
 #' @export
 SVFGrid <- function(data, inputs, outputs, d) {
   grid <- list(data = data, inputs = inputs, outputs = outputs, d = d, df_grid = data.frame(), data_grid = data.frame())
@@ -25,14 +29,17 @@ SVFGrid <- function(data, inputs, outputs, d) {
 #' dividido en celdas definidas por el parámetro d.
 #'
 #' @param grid Objeto SVFGrid sobre el cual operar.
+#'
 #' @return El objeto SVFGrid con el grid creado.
+#'
+#' @example examples/example_create.R
+#'
 #' @export
 create_grid.SVFGrid <- function(grid) {
   x <- grid$data[, grid$inputs]
   n_dim <- ncol(x)
   knot_list <- list()
   knot_index <- list()
-
   for (col in seq_len(n_dim)) {
     knot_min <- min(x[, col], na.rm = TRUE)
     knot_max <- max(x[, col], na.rm = TRUE)
@@ -41,15 +48,14 @@ create_grid.SVFGrid <- function(grid) {
     knot_list[[col]] <- knots
     knot_index[[col]] <- 0:grid$d
   }
-
   grid$knot_list <- knot_list
   id_cells <- expand.grid(knot_index)
   id_cells <- id_cells[, ncol(id_cells):1]
   values <- expand.grid(rev(knot_list))
   values <- values[, ncol(values):1]
   grid$df_grid <- list(id_cells = id_cells, values = values, phi = vector("list", nrow(values)))
-
   grid <- calculate_df_grid(grid)
+  grid <- calculate_data_grid(grid)
 
   return(grid)
 }
@@ -61,7 +67,11 @@ create_grid.SVFGrid <- function(grid) {
 #'
 #' @param grid Objeto SVFGrid sobre el cual operar.
 #' @param cell Vector que especifica la posición de la celda en el grid.
+#'
 #' @return Una lista que contiene los valores de phi para la celda especificada.
+#'
+#' @example examples/example_phi.R
+#'
 #' @export
 calculate_dmu_phi <- function(grid, cell) {
   df_grid <- grid$df_grid
@@ -88,7 +98,11 @@ calculate_dmu_phi <- function(grid, cell) {
 #' para cada celda del grid y las celdas contiguas a cada celda.
 #'
 #' @param grid Objeto SVFGrid sobre el cual operar.
+#'
 #' @return El objeto SVFGrid con el dataframe de grid actualizado.
+#'
+#' @example examples/example_df.R
+#'
 #' @export
 calculate_df_grid <- function(grid) {
   n <- nrow(grid$df_grid$id_cells)
@@ -108,6 +122,36 @@ calculate_df_grid <- function(grid) {
   return(grid)
 }
 
+#' Método para añadir al dataframe grid el valor de la transformada de cada observación
+#'
+#' Esta función procesa cada observación del data_grid basándose en las columnas especificadas en inputs,
+#' calculando valores phi y celdas contiguas (c_cells) y actualizando el objeto grid con estos resultados.
+#'
+#' @param grid Objeto SVFGrid sobre el cual operar.
+#'
+#' @return 0bjeto grid modificado con los resultados de phi y c_cells añadidos.
+#'
+#' @example examples/example_data.R
+#'
+#' @export
+calculate_data_grid <- function(grid) {
+  grid$data_grid <- grid$data[, grid$inputs, drop = FALSE]
+  phi_list <- list()
+  c_cells_list <- list()
+  for (i in seq_len(nrow(grid$data_grid))) {
+    x <- as.numeric(grid$data_grid[i, ])
+    p <- search_dmu.GRID(grid, x)
+    phi <- calculate_dmu_phi(grid, p)
+    phi_list[[i]] <- phi
+    c_cells <- search_contiguous_cell(p)
+    c_cells_list[[i]] <- c_cells
+  }
+  grid$data_grid$phi <- phi_list
+  grid$data_grid$c_cells <- c_cells_list
+
+  return(grid)
+}
+
 #' Buscar celdas contiguas en SVFGrid
 #'
 #' Esta función identifica y retorna las celdas contiguas a una celda especificada
@@ -115,7 +159,11 @@ calculate_df_grid <- function(grid) {
 #' o punto con la celda especificada.
 #'
 #' @param cell Vector que especifica la posición de la celda en el grid.
+#'
 #' @return Una lista de celdas contiguas a la especificada.
+#'
+#' @example examples/example_contiguous.R
+#'
 #' @export
 search_contiguous_cell <- function(cell) {
   con_c_list <- list()

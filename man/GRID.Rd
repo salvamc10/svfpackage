@@ -28,7 +28,7 @@ Un grid es una partición del espacio de los inputs dividido por celdas.
 }}
 
 \examples{
-source("~/svfpackage/R/grid.R")
+source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
 
 # Crear el dataset de ejemplo
 data <- data.frame(x1 = c(1, 2, 3), x2 = c(4, 5, 6), y1 = c(7, 8, 9))
@@ -39,6 +39,6 @@ outputs <- c("y1")
 d <- 2
 
 # Inicializar la cuadrícula
-grid_instance <- initialize_GRID(data, inputs, outputs, d)
-print(grid_instance)
+grid_obj <- SVFGrid(data, inputs, outputs, d)
+print(grid_obj)
 }

@@ -17,3 +17,9 @@ Esta función identifica y retorna las celdas contiguas a una celda especificada
 en el grid. Las celdas contiguas son aquellas que comparten al menos un borde
 o punto con la celda especificada.
 }
+\examples{
+# Ejemplo de búsqueda de celda contigua
+cell <- c(2, 2)
+contiguous_cells <- search_contiguous_cell(cell)
+print(paste("Celdas contiguas: (", paste(contiguous_cells, collapse = ", "), ")", sep = ""))
+}

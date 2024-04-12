@@ -12,7 +12,7 @@
 #' @field data_grid Grid de datos, inicialmente NULL.
 #' @field knot_list Lista de nodos del grid, inicialmente NULL.
 #'
-#' @example examples/examples_grid.R
+#' @example examples/example_grid.R
 #'
 #' @export
 GRID <- function(data, inputs, outputs, d) {
