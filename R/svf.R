@@ -1,49 +1,84 @@
 library(ROI)
-library(ROI.plugin.glpk)
+library(ROI.plugin.glpk)  # Usamos GLPK como solver
 
-# Definir el constructor de SVF
+# Definir la clase SVF usando una lista y métodos S3
 SVF <- function(method, inputs, outputs, data, C, eps, d) {
-  obj <- list(method = method, inputs = inputs, outputs = outputs, data = data,
-              C = C, eps = eps, d = d, model = NULL, solution = NULL)
-  class(obj) <- "SVF"
-  return(obj)
+  # Crear una lista que actúa como objeto de clase SVF
+  object <- list(
+    method = method,
+    inputs = inputs,
+    outputs = outputs,
+    data = data,
+    C = C,
+    eps = eps,
+    d = d,
+    op = list()  # Para almacenar el objeto de problema de optimización
+  )
+  class(object) <- "SVF"
+  return(object)
+}
+
+# Método initialize para SVF
+initialize.SVF <- function(object) {
+  n <- nrow(object$data)
+  Q <- matrix(0, ncol = length(object$inputs), nrow = length(object$inputs))
+  L <- rep(0, length(object$inputs))
+
+  # Suponemos que las restricciones dependen de outputs y data, esto es solo un ejemplo
+  constraints <- L_constraint(L = matrix(runif(length(object$inputs) * n), ncol = length(object$inputs)),
+                              dir = rep("<=", n),
+                              rhs = runif(n))
+
+  objective <- L_objective(L)
+  types <- rep("C", length(object$inputs))
+
+  object$op <- OP(objective = objective, constraints = constraints, types = types)
+  return(object)
 }
 
 # Método para modificar el modelo
-modify_model <- function(obj, c, eps) {
-  # Aquí asumimos que obj$model está previamente inicializado y configurado
-  # Esta parte necesitará ser adaptada según cómo se crea el modelo originalmente
-  requireNamespace("ROI", quietly = TRUE)
-  n_obs <- nrow(obj$data)
+modify_model.SVF <- function(object, C, eps) {
+  object$C <- C
+  object$eps <- eps
 
-  # Suponiendo que tenemos que reconfigurar todo el modelo:
-  obj$model <- ROI::OP(objective = ROI_objective(coefs = rep(1, length(obj$inputs)), maximum = FALSE),
-                       constraints = L_constraint(L = matrix(rep(1, length(obj$inputs) * n_obs), nrow = n_obs),
-                                                  dir = rep("<=", n_obs),
-                                                  rhs = rep(eps, n_obs)),
-                       types = rep("C", length(obj$inputs)))
+  # Modificar el problema de optimización
+  new_rhs <- sapply(object$op@constraints@rhs, function(r) r + eps)
+  object$op@constraints <- L_constraint(L = object$op@constraints@L,
+                                        dir = object$op@constraints@dir,
+                                        rhs = new_rhs)
 
-  # Actualizar parámetros específicos si es necesario
-  # Aquí deberías implementar lógicas específicas basadas en la estructura de tu modelo
-  return(obj)
+  return(object)
 }
 
-# Método para obtener estimaciones
-get_estimation <- function(obj, dmu) {
-  if (length(dmu) != length(obj$inputs)) {
+# Método para obtener estimaciones de DMU en SVF
+get_estimation.SVF <- function(object, dmu) {
+  if (length(dmu) != length(object$inputs)) {
     stop("El número de inputs de la DMU no coincide con el número de inputs del problema.")
   }
-  # Asumir que obj$solution ya contiene resultados necesarios para la estimación
-  # Implementar la lógica para calcular estimaciones basadas en dmu y obj$solution
-  return(list())  # Retorna una lista con estimaciones
+
+  # Suponemos que `grid` es un componente del objeto que debe estar definido correctamente
+  # y que `grid` tiene una función `search_dmu` que encuentra la celda de la DMU y `phi` es un coeficiente calculado y almacenado
+  dmu_cell <- object$grid$search_dmu(dmu)
+  phi <- object$grid$df_grid[object$grid$df_grid$id_cell == dmu_cell, "phi"]
+
+  prediction_list <- vector("list", length(object$outputs))
+  for (i in seq_along(object$outputs)) {
+    # Suponiendo que `solution.w` contiene los pesos calculados para cada output
+    prediction <- sum(object$solution$w[[i]] * phi[[i]])
+    prediction_list[[i]] <- round(prediction, 3)
+  }
+  return(prediction_list)
 }
 
-# Crear instancia de SVF
-svf_model <- SVF("some_method", c("input1", "input2"), c("output1"), data.frame(input1 = 1:10, input2 = 11:20), C = 0.1, eps = 0.01, d = 2)
+# Crear una instancia de SVF y usar los métodos
+svf_instance <- SVF("example", list("x1", "x2"), list("y1"), data.frame(x1 = 1:10, x2 = 11:20), 1.0, 0.1, 2)
+svf_initialized <- initialize.SVF(svf_instance)
+svf_modified <- modify_model.SVF(svf_initialized, 1.5, 0.2)
 
-# Modificar el modelo
-svf_model <- modify_model(svf_model, 0.5, 0.02)
+print(svf_modified)
 
-# Obtener una estimación para una observación particular
-estimation <- get_estimation(svf_model, c(5, 15))
-print(estimation)
+# Ejemplo de uso de la función get_estimation
+dmu_example <- c(5, 15)  # Una DMU de ejemplo
+estimations <- get_estimation.SVF(svf_initialized, dmu_example)
+print(estimations)
+
