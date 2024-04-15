@@ -17,7 +17,7 @@ result <- transformation(3, 2)
 cat("Resultado de la transformación:", result, "\n")
 
 grid_instance$knot_list <- list(list(1, 2.5, 4), list(1, 2, 3))
-dmu <- c(3.5, 1.2)
+dmu <- c(3.1, 3.1)
 position <- search_dmu.GRID(grid_instance, dmu)
 
 print(paste("Posición en el grid: (", paste(position, collapse = ", "), ")", sep = ""))

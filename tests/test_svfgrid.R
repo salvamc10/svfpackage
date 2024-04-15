@@ -2,10 +2,11 @@ source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
 
 # Usar datos de prueba
 data <- read.table("~/svfpackage/data/datos.txt", header = TRUE, sep = ";")
+#data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(1, 3, 1, 2), y1 = c(2, 4, 3, 5), y2 = c(1, 2, 3, 4))
 
 # Definir listas de inputs, outputs y la cantidad de particiones
 inputs <- c("x1", "x2")
-outputs <- c("y1")
+outputs <- c("y1", "y2")
 d <- 2
 
 # Crear la instancia de la clase SVFGrid y llamar al método create_grid
