@@ -69,16 +69,3 @@ get_estimation.SVF <- function(object, dmu) {
   }
   return(prediction_list)
 }
-
-# Crear una instancia de SVF y usar los métodos
-svf_instance <- SVF("example", list("x1", "x2"), list("y1"), data.frame(x1 = 1:10, x2 = 11:20), 1.0, 0.1, 2)
-svf_initialized <- initialize.SVF(svf_instance)
-svf_modified <- modify_model.SVF(svf_initialized, 1.5, 0.2)
-
-print(svf_modified)
-
-# Ejemplo de uso de la función get_estimation
-dmu_example <- c(5, 15)  # Una DMU de ejemplo
-estimations <- get_estimation.SVF(svf_initialized, dmu_example)
-print(estimations)
-
