@@ -7,13 +7,13 @@
 SVFGrid(data, inputs, outputs, d)
 }
 \arguments{
-\item{data}{DataFrame con los datos sobre los cuales se construirá el grid.}
+\item{data}{Conjunto de datos sobre los que se construye el grid.}
 
-\item{inputs}{Vector con los nombres de las columnas que serán tratadas como inputs.}
+\item{inputs}{Listado de inputs.}
 
-\item{outputs}{Vector con los nombres de las columnas que serán tratadas como outputs.}
+\item{outputs}{Listado de outputs.}
 
-\item{d}{Entero o vector de enteros que especifica el número de divisiones por dimensión en el grid.}
+\item{d}{Número de particiones en las que se divide el grid.}
 }
 \value{
 Un objeto de clase SVFGrid.
@@ -28,6 +28,26 @@ source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
 
 # Crear un conjunto de datos de ejemplo
 data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(5, 6, 7, 8), y1 = c(9, 1, 2, 3))
+
+# Método print para la clase GRID
+print.GRID <- function(x) {
+  cat("Datos del GRID:\n")
+  cat("----------------------------------\n")
+  cat(sprintf("Inputs: \%s\n", paste(x$inputs, collapse = ", ")))
+  cat(sprintf("Outputs: \%s\n", paste(x$outputs, collapse = ", ")))
+  cat(sprintf("Dimensiones de Data: \%d rows, \%d columns\n", nrow(x$data), ncol(x$data)))
+  cat(sprintf("  d (Número de particiones): \%d\n", x$d))
+
+  cat("Data Preview (solo las primeras columnas):\n")
+  if (nrow(x$data) > 0) {
+    print(head(x$data))
+  } else {
+    cat("No hay datos.\n")
+  }
+
+  cat("----------------------------------\n")
+  invisible(x)
+}
 
 # Definir listas de inputs, outputs y la cantidad de particiones
 inputs <- c("x1", "x2")

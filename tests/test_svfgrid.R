@@ -1,12 +1,11 @@
 source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
 
 # Usar datos de prueba
-data <- read.table("~/svfpackage/data/datos.txt", header = TRUE, sep = ";")
-#data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(1, 3, 1, 2), y1 = c(2, 4, 3, 5), y2 = c(1, 2, 3, 4))
+data <- read.table("~/Documents/GitHub/svfpackage/data/datos.txt", header = TRUE, sep = ";")
 
 # Definir listas de inputs, outputs y la cantidad de particiones
 inputs <- c("x1", "x2")
-outputs <- c("y1", "y2")
+outputs <- c("y1")
 d <- 2
 
 # Crear la instancia de la clase SVFGrid y llamar al método create_grid
@@ -20,20 +19,13 @@ for (i in seq_along(grid_obj$knot_list)) {
       paste(sprintf("%.1f", grid_obj$knot_list[[i]]), collapse = ", "), "\n")
 }
 
-# Imprimimos el knot_index
-cat("\nknot_index:\n")
-for (i in seq_along(grid_obj$knot_index)) {
-  cat(paste0("Dimensión ", i, " (", names(grid_obj$knot_index)[i], "): "),
-      paste(grid_obj$knot_index[[i]], collapse = ", "), "\n")
-}
-
 # Realizar una búsqueda en el grid para una observación
-dmu <- c(3, 4)
+dmu <- c(1, 3 )
 position <- search_dmu.GRID(grid_obj, dmu)
 print(paste("Posición en el grid: (", paste(position, collapse = ", "), ")", sep = ""))
 
 # Ejemplo de búsqueda de celda contigua
-cell <- c(2, 2)
+cell <- c(1, 1)
 contiguous_cells <- search_contiguous_cell(cell)
 print(paste("Celdas contiguas: (", paste(contiguous_cells, collapse = ", "), ")", sep = ""))
 

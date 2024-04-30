@@ -6,10 +6,10 @@ source("~/Documents/GitHub/svfpackage/R/grid.R")
 #' extensión de la clase GRID con funcionalidades adicionales específicas
 #' para el manejo de grids en el contexto de análisis SVF.
 #'
-#' @param data DataFrame con los datos sobre los cuales se construirá el grid.
-#' @param inputs Vector con los nombres de las columnas que serán tratadas como inputs.
-#' @param outputs Vector con los nombres de las columnas que serán tratadas como outputs.
-#' @param d Entero o vector de enteros que especifica el número de divisiones por dimensión en el grid.
+#' @param data Conjunto de datos sobre los que se construye el grid.
+#' @param inputs Listado de inputs.
+#' @param outputs Listado de outputs.
+#' @param d Número de particiones en las que se divide el grid.
 #'
 #' @return Un objeto de clase SVFGrid.
 #'
@@ -22,7 +22,7 @@ SVFGrid <- function(data, inputs, outputs, d) {
   return(grid)
 }
 
-#' Crear grid para SVFGrid
+#' Función que crea un grid en base a unos datos e hiperparámetro d
 #'
 #' Este método crea un grid basado en los datos y el parámetro d proporcionados
 #' al constructor. Este grid es una representación de los datos en un espacio
@@ -32,7 +32,7 @@ SVFGrid <- function(data, inputs, outputs, d) {
 #'
 #' @return El objeto SVFGrid con el grid creado.
 #'
-#' @example examples/example_create.R
+#' @example examples/example_create_grid.R
 #'
 #' @export
 create_grid.SVFGrid <- function(grid) {
@@ -46,7 +46,7 @@ create_grid.SVFGrid <- function(grid) {
     amplitud <- (knot_max - knot_min) / grid$d
     knots <- seq(knot_min, knot_max, length.out = grid$d + 1)
     knot_list[[col]] <- knots
-    knot_index[[col]] <- 0:grid$d
+    knot_index[[col]] <- 1:(grid$d + 1)
   }
   grid$knot_list <- knot_list
   id_cells <- expand.grid(knot_index)
@@ -60,13 +60,13 @@ create_grid.SVFGrid <- function(grid) {
   return(grid)
 }
 
-#' Calcular phi para una celda específica en SVFGrid
+#' Función que calcula el valor de la transformación (phi) de una observación en el grid.
 #'
 #' Esta función calcula y retorna el valor de phi para una celda específica del
 #' grid, basado en los datos del grid y la posición de la celda.
 #'
 #' @param grid Objeto SVFGrid sobre el cual operar.
-#' @param cell Vector que especifica la posición de la celda en el grid.
+#' @param cell Posición de la observación en el grid.
 #'
 #' @return Una lista que contiene los valores de phi para la celda especificada.
 #'
@@ -91,7 +91,7 @@ calculate_dmu_phi <- function(grid, cell) {
   return(phi_list)
 }
 
-#' Calcular el dataframe de grid para SVFGrid
+#' Método para añadir al dataframe grid el valor de la transformada de cada observación
 #'
 #' Este método calcula y añade información adicional al dataframe de grid
 #' asociado a un objeto SVFGrid. Esta información incluye los valores de phi
@@ -169,7 +169,7 @@ search_contiguous_cell <- function(cell) {
   con_c_list <- list()
   for (dim in seq_along(cell)) {
     value <- cell[dim] - 1
-    if (value >= 0) {
+    if (value >= 1) {
       con_cell <- cell
       con_cell[dim] <- value
       con_c_list <- c(con_c_list, list(con_cell))

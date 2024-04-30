@@ -2,14 +2,14 @@
 % Please edit documentation in R/svfgrid.R
 \name{calculate_dmu_phi}
 \alias{calculate_dmu_phi}
-\title{Calcular phi para una celda específica en SVFGrid}
+\title{Función que calcula el valor de la transformación (phi) de una observación en el grid.}
 \usage{
 calculate_dmu_phi(grid, cell)
 }
 \arguments{
 \item{grid}{Objeto SVFGrid sobre el cual operar.}
 
-\item{cell}{Vector que especifica la posición de la celda en el grid.}
+\item{cell}{Posición de la observación en el grid.}
 }
 \value{
 Una lista que contiene los valores de phi para la celda especificada.

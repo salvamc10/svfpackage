@@ -26,4 +26,3 @@ solution <- ROI::ROI_solve(lp, solver = "glpk")
 # Imprimir la estructura del objeto de solución
 print(solution$solution)
 print(solution$objval)
-

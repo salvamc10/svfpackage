@@ -9,11 +9,11 @@ GRID(data, inputs, outputs, d)
 \arguments{
 \item{data}{DataFrame con el conjunto de datos sobre los que se construye el grid.}
 
-\item{inputs}{Vector de nombres de los inputs.}
+\item{inputs}{Listado de inputs.}
 
-\item{outputs}{Vector de nombres de los outputs.}
+\item{outputs}{Listado de outputs.}
 
-\item{d}{Vector con el número de particiones en las que se divide el grid.}
+\item{d}{número de particiones en las que se divide el grid.}
 }
 \description{
 Esta clase representa un grid sobre el que se realiza el modelo SVF.
@@ -29,6 +29,26 @@ Un grid es una partición del espacio de los inputs dividido por celdas.
 
 \examples{
 source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
+
+# Método print para la clase GRID
+print.GRID <- function(x) {
+  cat("Datos del GRID:\n")
+  cat("----------------------------------\n")
+  cat(sprintf("Inputs: \%s\n", paste(x$inputs, collapse = ", ")))
+  cat(sprintf("Outputs: \%s\n", paste(x$outputs, collapse = ", ")))
+  cat(sprintf("Dimensiones de Data: \%d rows, \%d columns\n", nrow(x$data), ncol(x$data)))
+  cat(sprintf("  d (Número de particiones): \%d\n", x$d))
+
+  cat("Data Preview (solo las primeras columnas):\n")
+  if (nrow(x$data) > 0) {
+    print(head(x$data))
+  } else {
+    cat("No hay datos.\n")
+  }
+
+  cat("----------------------------------\n")
+  invisible(x)
+}
 
 # Crear el dataset de ejemplo
 data <- data.frame(x1 = c(1, 2, 3), x2 = c(4, 5, 6), y1 = c(7, 8, 9))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/svfgrid.R
 \name{create_grid.SVFGrid}
 \alias{create_grid.SVFGrid}
-\title{Crear grid para SVFGrid}
+\title{Función que crea un grid en base a unos datos e hiperparámetro d}
 \usage{
 create_grid.SVFGrid(grid)
 }

@@ -7,9 +7,9 @@
 transformation(x_i, t_k)
 }
 \arguments{
-\item{x_i}{Valor de la observación a evaluar.}
+\item{x_i}{Valor de la celda a evaluar.}
 
-\item{t_k}{Valor del nodo con el que se compara.}
+\item{t_k}{Valor del nodo con el que se quiere comparar.}
 }
 \value{
 Resultado de la comparación: 1, 0, -1.

@@ -6,9 +6,9 @@
 #' @name GRID
 #'
 #' @param data DataFrame con el conjunto de datos sobre los que se construye el grid.
-#' @param inputs Vector de nombres de los inputs.
-#' @param outputs Vector de nombres de los outputs.
-#' @param d Vector con el número de particiones en las que se divide el grid.
+#' @param inputs Listado de inputs.
+#' @param outputs Listado de outputs.
+#' @param d número de particiones en las que se divide el grid.
 #' @field data_grid Grid de datos, inicialmente NULL.
 #' @field knot_list Lista de nodos del grid, inicialmente NULL.
 #'
@@ -16,23 +16,16 @@
 #'
 #' @export
 GRID <- function(data, inputs, outputs, d) {
-  structure(list(
-    data = data,
-    inputs = inputs,
-    outputs = outputs,
-    d = d,
-    data_grid = NULL,
-    knot_list = NULL
-  ), class = "GRID")
+  structure(list( data = data, inputs = inputs, outputs = outputs, d = d, data_grid = NULL, knot_list = NULL), class = "GRID")
 }
 
-#' Buscar DMU en GRID
+#' Función que devuelve la celda en la que se encuentra una observación en el grid
 #'
 #' Este método busca una DMU específica en el grid y devuelve la celda
 #' en la que se encuentra dicha observación.
 #'
 #' @param grid Objeto de la clase GRID.
-#' @param dmu Vector con la observación a buscar en el grid.
+#' @param dmu Observación a buscar en el grid.
 #'
 #' @return Vector con la posición de la observación en el grid.
 #'
@@ -60,7 +53,6 @@ search_dmu.GRID <- function(grid, dmu) {
       cell[l] <- length(r[[l]])
     }
   }
-  cell <- cell - 1
 
   return(cell)
 }
@@ -71,8 +63,8 @@ search_dmu.GRID <- function(grid, dmu) {
 #' o menor que el valor de un nodo en el grid. Devuelve 1 si es mayor,
 #' 0 si es igual, y -1 si es menor.
 #'
-#' @param x_i Valor de la observación a evaluar.
-#' @param t_k Valor del nodo con el que se compara.
+#' @param x_i Valor de la celda a evaluar.
+#' @param t_k Valor del nodo con el que se quiere comparar.
 #'
 #' @return Resultado de la comparación: 1, 0, -1.
 #'

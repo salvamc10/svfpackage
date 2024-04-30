@@ -2,7 +2,7 @@
 % Please edit documentation in R/svfgrid.R
 \name{calculate_df_grid}
 \alias{calculate_df_grid}
-\title{Calcular el dataframe de grid para SVFGrid}
+\title{Método para añadir al dataframe grid el valor de la transformada de cada observación}
 \usage{
 calculate_df_grid(grid)
 }

@@ -1,12 +1,17 @@
-source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
+source("~/Documents/GitHub/svfpackage/R/ssvf.R")
 
-# Método print para la clase GRID
-print.GRID <- function(x) {
-  cat("Datos del GRID:\n")
+# Método print para la clase SSVF
+print.SSVF <- function(x) {
+  cat("Detalles del modelo SSVF:\n")
   cat("----------------------------------\n")
+  cat(sprintf("Method: %s\n", x$method))
   cat(sprintf("Inputs: %s\n", paste(x$inputs, collapse = ", ")))
   cat(sprintf("Outputs: %s\n", paste(x$outputs, collapse = ", ")))
   cat(sprintf("Dimensiones de Data: %d rows, %d columns\n", nrow(x$data), ncol(x$data)))
+
+  cat("Hyperparámetos:\n")
+  cat(sprintf("  C: %f\n", x$c))
+  cat(sprintf("  Epsilon: %f\n", x$eps))
   cat(sprintf("  d (Número de particiones): %d\n", x$d))
 
   cat("Data Preview (solo las primeras columnas):\n")
@@ -20,14 +25,13 @@ print.GRID <- function(x) {
   invisible(x)
 }
 
-# Crear el dataset de ejemplo
-data <- data.frame(x1 = c(1, 2, 3), x2 = c(4, 5, 6), y1 = c(7, 8, 9))
-
-# Definir listas de inputs, outputs y la cantidad de particiones
+data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(5, 6, 7, 8), y1 = c(9, 1, 2, 3))
 inputs <- c("x1", "x2")
 outputs <- c("y1")
 d <- 2
+C <- 1
+eps <- 0
+method <- 'SSVF'
 
-# Inicializar la cuadrícula
-grid_obj <- SVFGrid(data, inputs, outputs, d)
-print(grid_obj)
+ssvf <- SSVF(method, inputs, outputs, data, C, eps, d)
+print(ssvf)
