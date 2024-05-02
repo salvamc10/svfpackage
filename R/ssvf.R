@@ -1,12 +1,6 @@
 source("~/Documents/GitHub/svfpackage/R/svf.R")
 source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
 
-library(ROI)
-library(ROI.plugin.glpk)
-library(ompr)
-library(ompr.roi)
-library(dplyr)
-
 #' Crea un objeto SSVF
 #'
 #' @param method Método SVF a utilizar.
@@ -28,6 +22,19 @@ SSVF <- function(method, inputs, outputs, data, c, eps, d) {
   return(svf)
 }
 
+#' Entrena el modelo SSVF
+#'
+#' Esta función configura y resuelve el modelo SSVF utilizando programación lineal mixta.
+#'
+#' @param svf Objeto SSVF.
+#'
+#' @return El objeto SSVF con el modelo resuelto añadido.
+#'
+#' @example examples/example_train.R
+#'
+#' @import Rcplex
+#'
+#' @export
 train.SSVF <- function(svf) {
   y_df <- svf$data[, svf$outputs, drop = FALSE]
   y <- as.matrix(y_df)
@@ -36,43 +43,66 @@ train.SSVF <- function(svf) {
   n_obs <- nrow(y_df)
 
   svf$grid <- create_grid.SVFGrid(SVFGrid(svf$data, svf$inputs, svf$outputs, svf$d))
-
   n_var <- length(svf$grid$data_grid$phi[[1]][[1]])
 
-  # Inicializar el modelo de optimización aquí
-  model <- MIPModel() %>%
-    add_variable(w[out, var], out = 1:n_out, var = 1:n_var, type = "continuous", lb = 0, ub = 1e+33) %>%
-    add_variable(xi[out, obs], out = 1:n_out, obs = 1:n_obs, type = "continuous", lb = 0, ub = 1e+33) %>%
-    set_objective(sum_expr(w[out, var] * 1, out = 1:n_out, var = 1:n_var) +
-                    sum_expr(xi[out, obs] * svf$c, out = 1:n_out, obs = 1:n_obs), "min")
+  total_variables <- n_out * n_var + n_out * n_obs
+
+  cvec <- c(rep(1, n_out * n_var), rep(svf$c, n_out * n_obs))
+
+  Amat <- matrix(0, nrow = 2 * n_out * n_obs, ncol = total_variables)
+  bvec <- vector("numeric", length = 2 * n_out * n_obs)
+  sense <- rep("L", 2 * n_out * n_obs)
 
   for (out in 1:n_out) {
     for (obs in 1:n_obs) {
-      model <- model %>%
-        add_constraint(sum_expr(-w[out, var] * svf$grid$data_grid$phi[[obs]][[out]][var], var = 1:n_var) <= -y[obs, out]) %>%
-        add_constraint(sum_expr(w[out, var] * svf$grid$data_grid$phi[[obs]][[out]][var], var = 1:n_var) - xi[out, obs] <= y[obs, out] + svf$eps)
+      phi_vector <- svf$grid$data_grid$phi[[obs]][[out]]
+      row_index1 <- (out - 1) * 2 * n_obs + (obs - 1) * 2 + 1
+      row_index2 <- row_index1 + 1
+
+      w_indices <- ((out - 1) * n_var + 1):((out - 1) * n_var + n_var)
+      xi_index <- n_out * n_var + (out - 1) * n_obs + obs
+
+      Amat[row_index1, w_indices] <- -phi_vector
+      Amat[row_index2, w_indices] <- phi_vector
+      Amat[row_index2, xi_index] <- -1
+
+      bvec[row_index1] <- -y[obs, out]
+      bvec[row_index2] <- y[obs, out] + svf$eps
     }
   }
 
-  svf$model <- model
+  svf$model <- Rcplex(cvec = cvec, Amat = Amat, bvec = bvec, sense = sense, objsense = "min")
 
   return(svf)
 }
 
-solve.SSVF <- function(svf) {
-  result <- solve_model(svf$model, with_ROI(solver = "glpk"))
-
-  w_solution <- result$solution[grep("^w", names(result$solution))]
-  xi_solution <- result$solution[grep("^xi", names(result$solution))]
-
+#' Resolver el modelo SSVF
+#'
+#' Esta función extrae las soluciones del modelo SSVF después de que ha sido resuelto.
+#'
+#' @param svf Objeto SSVF con un modelo ya entrenado.
+#'
+#' @return Una lista conteniendo las soluciones para las variables 'w' y 'xi'.
+#'
+#' @example examples/example_solve.R
+#'
+#' @export
+solve <- function(svf) {
+  solution <- svf$model$xopt
+  n_var <- length(svf$grid$data_grid$phi[[1]][[1]])
   n_out <- length(svf$outputs)
-  n_w_dim <- length(w_solution) / n_out
   n_obs <- nrow(svf$data)
+
+  n_w_vars <- n_out * n_var
+  n_xi_vars <- n_out * n_obs
+
+  w_solution <- solution[1:n_w_vars]
+  xi_solution <- solution[(n_w_vars + 1):(n_w_vars + n_xi_vars)]
 
   mat_w <- vector("list", n_out)
   for (out in seq_len(n_out)) {
-    start_index <- (out - 1) * n_w_dim + 1
-    end_index <- out * n_w_dim
+    start_index <- (out - 1) * n_var + 1
+    end_index <- out * n_var
     mat_w[[out]] <- round(w_solution[start_index:end_index], 6)
   }
 
@@ -83,31 +113,15 @@ solve.SSVF <- function(svf) {
     mat_xi[[out]] <- round(xi_solution[start_index:end_index], 6)
   }
 
-  cat("Solution for w variables:\n")
+  cat("Solucion para w variables:\n")
   for (out in seq_len(n_out)) {
-    cat(sprintf(" ["), paste(mat_w[[out]], collapse=", "), "]\n")
+    cat(sprintf(" [%s]\n", paste(mat_w[[out]], collapse=", ")))
   }
 
-  cat("Solution for xi variables:\n")
+  cat("Solucion para xi variables:\n")
   for (out in seq_len(n_out)) {
-    cat(sprintf(" ["), paste(mat_xi[[out]], collapse=", "), "]\n")
+    cat(sprintf(" [%s]\n", paste(mat_xi[[out]], collapse=", ")))
   }
 
   return(list(w = mat_w, xi = mat_xi))
 }
-
-# Crear y mostrar el objeto SVF
-data <- data.frame(x1 = c(1, 2), x2 = c(1, 1), y1 = c(1, 4))
-inputs <- c("x1", "x2")
-outputs <- c("y1")
-d <- 2
-C <- 1
-eps <- 0
-method <- 'SSVF'
-
-# Crear y preparar el modelo
-svf <- SSVF(method, inputs, outputs, data, C, eps, d)
-trained_svf <- train.SSVF(svf)
-
-# Resolver el modelo y mostrar resultados
-solution_svf <- solve.SSVF(trained_svf)
