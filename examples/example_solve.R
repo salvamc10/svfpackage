@@ -1,7 +1,9 @@
 source("~/Documents/GitHub/svfpackage/R/ssvf.R")
 
+library(Rcplex)
+
 # Usar datos de prueba
-data <- read.table("~/Documents/GitHub/svfpackage/data/datos.txt", header = TRUE, sep = ";")
+data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(5, 6, 7, 8), y1 = c(9, 1, 2, 3))
 
 # Definición de inputs, outputs y otros parámetros
 inputs <- c("x1", "x2")
