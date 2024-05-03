@@ -16,8 +16,7 @@ El objeto SSVF con el modelo resuelto añadido.
 Esta función configura y resuelve el modelo SSVF utilizando programación lineal mixta.
 }
 \examples{
-source("~/Documents/GitHub/svfpackage/R/ssvf.R")
-
+library(svfpackage)
 library(Rcplex)
 
 # Usar datos de prueba

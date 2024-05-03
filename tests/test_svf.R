@@ -1,7 +1,7 @@
-source("~/Documents/GitHub/svfpackage/R/svf.R")
+library(svfpackage)
 
 # Usar datos de prueba
-data <- read.table("~/Documents/GitHub/svfpackage/data/datos.txt", header = TRUE, sep = ";")
+data(datos, package = "svfpackage")
 
 # Definir listas de inputs, outputs y la cantidad de particiones
 inputs <- c("x1", "x2")
@@ -12,7 +12,7 @@ d <- 2
 method <- 'SVF'
 
 # Crear una instancia de la clase SVF
-svf <- SVF(method, inputs, outputs, data, C, eps, d)
+svf <- SVF(method, inputs, outputs, datos, C, eps, d)
 
 # Imprimir la instancia
 print(svf)

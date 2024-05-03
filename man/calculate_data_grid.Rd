@@ -17,7 +17,7 @@ Esta función procesa cada observación del data_grid basándose en las columnas
 calculando valores phi y celdas contiguas (c_cells) y actualizando el objeto grid con estos resultados.
 }
 \examples{
-source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
+library(svfpackage)
 
 # Crear un conjunto de datos de ejemplo
 data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(5, 6, 7, 8), y1 = c(9, 1, 2, 3))

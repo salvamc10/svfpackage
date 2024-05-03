@@ -18,7 +18,7 @@ al constructor. Este grid es una representación de los datos en un espacio
 dividido en celdas definidas por el parámetro d.
 }
 \examples{
-source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
+library(svfpackage)
 
 # Crear un conjunto de datos de ejemplo
 data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(5, 6, 7, 8), y1 = c(9, 1, 2, 3))

@@ -1,5 +1,3 @@
-source("~/Documents/GitHub/svfpackage/R/grid.R")
-
 #' Constructor para la clase SVFGrid
 #'
 #' Esta función crea una instancia de la clase SVFGrid, la cual es una

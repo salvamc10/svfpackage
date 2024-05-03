@@ -1,4 +1,4 @@
-source("~/Documents/GitHub/svfpackage/R/svf_functions.R")
+library(svfpackage)
 
 # Método print para la clase SSVF
 print.SSVF <- function(x) {

@@ -28,7 +28,7 @@ Un grid es una partición del espacio de los inputs dividido por celdas.
 }}
 
 \examples{
-source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
+library(svfpackage)
 
 # Método print para la clase GRID
 print.GRID <- function(x) {

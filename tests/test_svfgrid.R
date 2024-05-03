@@ -1,7 +1,7 @@
-source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
+library(svfpackage)
 
 # Usar datos de prueba
-data <- read.table("~/Documents/GitHub/svfpackage/data/datos.txt", header = TRUE, sep = ";")
+data(datos, package = "svfpackage")
 
 # Definir listas de inputs, outputs y la cantidad de particiones
 inputs <- c("x1", "x2")
@@ -9,7 +9,7 @@ outputs <- c("y1")
 d <- 2
 
 # Crear la instancia de la clase SVFGrid y llamar al método create_grid
-grid_obj <- SVFGrid(data, inputs, outputs, d)
+grid_obj <- SVFGrid(datos, inputs, outputs, d)
 grid_obj <- create_grid.SVFGrid(grid_obj)
 
 # Imprimimos la knot_list

@@ -1,4 +1,4 @@
-source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
+library(svfpackage)
 
 # Método print para la clase GRID
 print.GRID <- function(x) {

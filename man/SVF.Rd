@@ -30,7 +30,7 @@ encapsulando un modelo SVF con las especificaciones de entrada y salida,
 junto con los hiperparámetros del modelo.
 }
 \examples{
-source("~/Documents/GitHub/svfpackage/R/svf.R")
+library(svfpackage)
 
 # Método print para la clase SVF
 print.SVF <- function(x) {

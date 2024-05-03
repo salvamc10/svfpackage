@@ -1,6 +1,3 @@
-source("~/Documents/GitHub/svfpackage/R/svf.R")
-source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
-
 #' Crea un objeto SSVF
 #'
 #' @param method Método SVF a utilizar.
@@ -124,4 +121,6 @@ solve <- function(svf) {
   }
 
   return(list(w = mat_w, xi = mat_xi))
+
+  Rcplex.close()
 }

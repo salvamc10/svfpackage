@@ -1,5 +1,4 @@
-source("~/Documents/GitHub/svfpackage/R/ssvf.R")
-
+library(svfpackage)
 library(Rcplex)
 
 # Usar datos de prueba

@@ -28,7 +28,7 @@ Un objeto de clase SSVF.
 Crea un objeto SSVF
 }
 \examples{
-source("~/Documents/GitHub/svfpackage/R/ssvf.R")
+library(svfpackage)
 
 # Método print para la clase SSVF
 print.SSVF <- function(x) {

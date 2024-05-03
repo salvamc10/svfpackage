@@ -16,8 +16,7 @@ Una lista conteniendo las soluciones para las variables 'w' y 'xi'.
 Esta función extrae las soluciones del modelo SSVF después de que ha sido resuelto.
 }
 \examples{
-source("~/Documents/GitHub/svfpackage/R/ssvf.R")
-
+library(svfpackage)
 library(Rcplex)
 
 # Usar datos de prueba
