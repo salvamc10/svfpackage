@@ -2,7 +2,6 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/salvamc10/svfpackage/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/salvamc10/svfpackage/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 El objetivo de svfpackage es proporcionar una colección de funciones y herramientas para la realización de estimaciones de fornteras
