@@ -122,4 +122,5 @@ solve <- function(svf) {
 
   return(list(w = mat_w, xi = mat_xi))
 
+  Rcplex.close()
 }
