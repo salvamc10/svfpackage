@@ -19,8 +19,6 @@ Este método busca una DMU específica en el grid y devuelve la celda
 en la que se encuentra dicha observación.
 }
 \examples{
-library(svfpackage)
-
 # Crear el dataset de ejemplo
 data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(5, 6, 7, 8), y1 = c(9, 1, 2, 3))
 

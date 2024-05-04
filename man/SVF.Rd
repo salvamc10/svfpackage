@@ -30,8 +30,6 @@ encapsulando un modelo SVF con las especificaciones de entrada y salida,
 junto con los hiperparámetros del modelo.
 }
 \examples{
-library(svfpackage)
-
 # Método print para la clase SVF
 print.SVF <- function(x) {
   cat("Detalles del modelo SVF:\n")

@@ -1,5 +1,3 @@
-library(svfpackage)
-
 # Método print para la clase SVF
 print.SVF <- function(x) {
   cat("Detalles del modelo SVF:\n")

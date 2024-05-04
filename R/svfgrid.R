@@ -1,3 +1,5 @@
+source("~/Documents/GitHub/svfpackage/R/grid.R")
+
 #' Constructor para la clase SVFGrid
 #'
 #' Esta función crea una instancia de la clase SVFGrid, la cual es una
@@ -73,18 +75,23 @@ create_grid.SVFGrid <- function(grid) {
 #' @export
 calculate_dmu_phi <- function(grid, cell) {
   df_grid <- grid$df_grid
-  phi <- numeric(length = nrow(df_grid$id_cells))
-  for (i in seq_len(nrow(df_grid$id_cells))) {
-    value <- 1
-    for (j in seq_along(cell)) {
-      if (cell[j] < df_grid$id_cells[i, j]) {
-        value <- 0
-        break
+  n_rows <- nrow(df_grid$id_cells)
+  phi_list <- vector("list", length(grid$outputs))
+
+  for (output_index in seq_along(grid$outputs)) {
+    phi <- numeric(n_rows)
+    for (i in seq_len(n_rows)) {
+      value <- 1
+      for (j in seq_along(cell)) {
+        if (cell[j] < df_grid$id_cells[i, j]) {
+          value <- 0
+          break
+        }
       }
+      phi[i] <- value
     }
-    phi[i] <- value
+    phi_list[[output_index]] <- phi
   }
-  phi_list <- list(phi)
 
   return(phi_list)
 }
@@ -133,15 +140,17 @@ calculate_df_grid <- function(grid) {
 #'
 #' @export
 calculate_data_grid <- function(grid) {
-  grid$data_grid <- grid$data[, grid$inputs, drop = FALSE]
-  phi_list <- list()
-  c_cells_list <- list()
-  for (i in seq_len(nrow(grid$data_grid))) {
-    x <- as.numeric(grid$data_grid[i, ])
+  grid$data_grid <- grid$data[, c(grid$inputs, grid$outputs), drop = FALSE]
+  n_rows <- nrow(grid$data_grid)
+  phi_list <- vector("list", n_rows)
+  c_cells_list <- vector("list", n_rows)
+
+  for (i in seq_len(n_rows)) {
+    x <- as.numeric(grid$data_grid[i, grid$inputs, drop = FALSE])
     p <- search_dmu.GRID(grid, x)
     phi <- calculate_dmu_phi(grid, p)
-    phi_list[[i]] <- phi
     c_cells <- search_contiguous_cell(p)
+    phi_list[[i]] <- phi
     c_cells_list[[i]] <- c_cells
   }
   grid$data_grid$phi <- phi_list

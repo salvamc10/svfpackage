@@ -28,8 +28,6 @@ Un grid es una partición del espacio de los inputs dividido por celdas.
 }}
 
 \examples{
-library(svfpackage)
-
 # Método print para la clase GRID
 print.GRID <- function(x) {
   cat("Datos del GRID:\n")
@@ -59,6 +57,6 @@ outputs <- c("y1")
 d <- 2
 
 # Inicializar la cuadrícula
-grid_obj <- SVFGrid(data, inputs, outputs, d)
+grid_obj <- GRID(data, inputs, outputs, d)
 print(grid_obj)
 }

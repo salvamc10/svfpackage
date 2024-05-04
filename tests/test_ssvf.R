@@ -1,19 +1,18 @@
-library(svfpackage)
-library(Rcplex)
+source("~/Documents/GitHub/svfpackage/R/ssvf.R")
 
 # Usar datos de prueba
-data(datos, package = "svfpackage")
+data <- read.table("~/Documents/GitHub/svfpackage/data/datos2.txt", header = TRUE, sep = ";")
 
 # Definición de inputs, outputs y otros parámetros
 inputs <- c("x1", "x2")
-outputs <- c("y1")
+outputs <- c("y1", "y2")
 d <- 2
 C <- 1
 eps <- 0
 method <- 'SSVF'
 
 # Crear y mostrar el objeto SVF
-ssvf <- SSVF(method, inputs, outputs, datos, C, eps, d)
+ssvf <- SSVF(method, inputs, outputs, data, C, eps, d)
 print(ssvf)
 
 trained_svf <- train.SSVF(ssvf)

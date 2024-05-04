@@ -1,5 +1,3 @@
-library(svfpackage)
-
 # Crear un conjunto de datos de ejemplo
 data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(5, 6, 7, 8), y1 = c(9, 1, 2, 3))
 

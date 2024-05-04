@@ -1,15 +1,16 @@
-library(svfpackage)
+source("~/Documents/GitHub/svfpackage/R/grid.R")
+
 library(ggplot2)
 
 # Usar datos de prueba
-data(datos, package = "svfpackage")
+data <- read.table("~/Documents/GitHub/svfpackage/data/datos2.txt", header = TRUE, sep = ";")
 
 # Crear una instancia de GRID y usar sus métodos
 inputs <- c("x1", "x2")
-outputs <- c("y1")
+outputs <- c("y1", "y2")
 d <- 2
 
-grid_instance <- GRID(datos, inputs, outputs, d)
+grid_instance <- GRID(data, inputs, outputs, d)
 
 print(grid_instance)
 
@@ -18,7 +19,7 @@ result <- transformation(3, 2)
 cat("Resultado de la transformación:", result, "\n")
 
 grid_instance$knot_list <- list(list(1, 2.5, 4), list(1, 2, 3))
-dmu <- c(4, 2)
+dmu <- c(3, 4)
 position <- search_dmu.GRID(grid_instance, dmu)
 
 print(paste("Posición en el grid: (", paste(position, collapse = ", "), ")", sep = ""))
@@ -58,4 +59,4 @@ plot_GRID <- function(grid_instance, data, dmu) {
   return(p)
 }
 # Graficar el grid con los datos y la DMU
-plot_GRID(grid_instance, datos, dmu)
+plot_GRID(grid_instance, data, dmu)

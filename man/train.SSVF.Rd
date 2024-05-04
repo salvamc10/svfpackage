@@ -16,9 +16,6 @@ El objeto SSVF con el modelo resuelto añadido.
 Esta función configura y resuelve el modelo SSVF utilizando programación lineal mixta.
 }
 \examples{
-library(svfpackage)
-library(Rcplex)
-
 # Usar datos de prueba
 data <- data.frame(x1 = c(1, 2, 3, 4), x2 = c(5, 6, 7, 8), y1 = c(9, 1, 2, 3))
 

@@ -31,7 +31,7 @@ cat("Resultado de la transformación:", result, "\n")
 # Output: 0
 
 # Evaluar una observación mayor que el valor del nodo del grid
-result <- transformation(7, 4)
+result <- transformation(4, 2)
 cat("Resultado de la transformación:", result, "\n")
 # Output: 1
 }

@@ -1,15 +1,15 @@
-library(svfpackage)
+source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
 
 # Usar datos de prueba
-data(datos, package = "svfpackage")
+data <- read.table("~/Documents/GitHub/svfpackage/data/datos2.txt", header = TRUE, sep = ";")
 
 # Definir listas de inputs, outputs y la cantidad de particiones
 inputs <- c("x1", "x2")
-outputs <- c("y1")
+outputs <- c("y1", "y2")
 d <- 2
 
 # Crear la instancia de la clase SVFGrid y llamar al método create_grid
-grid_obj <- SVFGrid(datos, inputs, outputs, d)
+grid_obj <- SVFGrid(data, inputs, outputs, d)
 grid_obj <- create_grid.SVFGrid(grid_obj)
 
 # Imprimimos la knot_list
@@ -30,7 +30,7 @@ contiguous_cells <- search_contiguous_cell(cell)
 print(paste("Celdas contiguas: (", paste(contiguous_cells, collapse = ", "), ")", sep = ""))
 
 # Ejemplo del calculo de phi para una celda dada
-cell <- c(0, 0)
+cell <- c(1, 3)
 phi_list <- calculate_dmu_phi(grid_obj, cell)
 print("Vector phi para la celda dada:")
 print(phi_list)
@@ -53,8 +53,10 @@ print_data_grid <- function(data_grid) {
   temp_df <- data.frame(
     x1 = data_grid$x1,
     x2 = data_grid$x2,
-    phi = sapply(data_grid$phi, function(phi) sprintf("[%s]", paste(phi[[1]], collapse = " "))),
-    c_cells = sapply(data_grid$c_cells, function(cells) if (length(cells) > 0) paste(sapply(cells, function(cell) paste0("(", paste(cell, collapse = ", "), ")")), collapse = " ") else "[]")
+    phi = sapply(data_grid$phi, function(phi) sprintf("[%s]", paste(phi, collapse = " "))),
+    c_cells = sapply(data_grid$c_cells, function(cells) if (length(cells) > 0) {
+      paste(sapply(cells, function(cell) paste0("(", paste(cell, collapse = ", "), ")")), collapse = " ")
+    } else "[]")
   )
   print(temp_df)
 }

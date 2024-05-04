@@ -1,3 +1,5 @@
+source("~/Documents/GitHub/svfpackage/R/ssvf.R")
+
 #' Función que crea un objeto del tipo SVF en función del método que se selecciona
 #'
 #' Esta función es un constructor que permite crear diferentes tipos de objetos SVF.
