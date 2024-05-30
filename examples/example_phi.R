@@ -12,6 +12,6 @@ grid_obj <- create_grid.SVFGrid(grid_obj)
 
 # Ejemplo del calculo de phi para una celda dada
 cell <- c(0, 0)
-phi_list <- calculate_dmu_phi(grid_obj, cell)
+phi_list <- calculate_dmu_phi.SVFGrid(grid_obj, cell)
 print("Vector phi para la celda dada:")
 print(phi_list)

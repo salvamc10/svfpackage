@@ -1,6 +1,3 @@
-source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
-source("~/Documents/GitHub/svfpackage/R/svf.R")
-
 library(Rcplex)
 
 #' Crea un objeto SSVF

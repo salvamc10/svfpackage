@@ -1,5 +1,3 @@
-source("~/Documents/GitHub/svfpackage/R/grid.R")
-
 #' Constructor para la clase SVFGrid
 #'
 #' Esta función crea una instancia de la clase SVFGrid, la cual es una
@@ -54,8 +52,8 @@ create_grid.SVFGrid <- function(grid) {
   values <- expand.grid(rev(knot_list))
   values <- values[, ncol(values):1]
   grid$df_grid <- list(id_cells = id_cells, values = values, phi = vector("list", nrow(values)))
-  grid <- calculate_df_grid(grid)
-  grid <- calculate_data_grid(grid)
+  grid <- calculate_df_grid.SVFGrid(grid)
+  grid <- calculate_data_grid.SVFGrid(grid)
 
   return(grid)
 }
@@ -73,7 +71,7 @@ create_grid.SVFGrid <- function(grid) {
 #' @example examples/example_phi.R
 #'
 #' @export
-calculate_dmu_phi <- function(grid, cell) {
+calculate_dmu_phi.SVFGrid <- function(grid, cell) {
   df_grid <- grid$df_grid
   n_rows <- nrow(df_grid$id_cells)
   phi_list <- vector("list", length(grid$outputs))
@@ -109,14 +107,14 @@ calculate_dmu_phi <- function(grid, cell) {
 #' @example examples/example_df.R
 #'
 #' @export
-calculate_df_grid <- function(grid) {
+calculate_df_grid.SVFGrid <- function(grid) {
   n <- nrow(grid$df_grid$id_cells)
   phi_list <- vector("list", n)
   c_cells_list <- vector("list", n)
   for (i in 1:n) {
     cell <- grid$df_grid$values[i, , drop = FALSE]
     p <- search_dmu.GRID(grid, cell)
-    phi <- calculate_dmu_phi(grid, p)[[1]]
+    phi <- calculate_dmu_phi.SVFGrid(grid, p)[[1]]
     c_cells <- search_contiguous_cell(p)
     phi_list[[i]] <- list(phi)
     c_cells_list[[i]] <- c_cells
@@ -139,7 +137,7 @@ calculate_df_grid <- function(grid) {
 #' @example examples/example_data.R
 #'
 #' @export
-calculate_data_grid <- function(grid) {
+calculate_data_grid.SVFGrid <- function(grid) {
   grid$data_grid <- grid$data[, c(grid$inputs, grid$outputs), drop = FALSE]
   n_rows <- nrow(grid$data_grid)
   phi_list <- vector("list", n_rows)
@@ -148,7 +146,7 @@ calculate_data_grid <- function(grid) {
   for (i in seq_len(n_rows)) {
     x <- as.numeric(grid$data_grid[i, grid$inputs, drop = FALSE])
     p <- search_dmu.GRID(grid, x)
-    phi <- calculate_dmu_phi(grid, p)
+    phi <- calculate_dmu_phi.SVFGrid(grid, p)
     c_cells <- search_contiguous_cell(p)
     phi_list[[i]] <- phi
     c_cells_list[[i]] <- c_cells
