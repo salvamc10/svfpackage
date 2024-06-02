@@ -112,17 +112,9 @@ solve <- function(svf) {
     mat_xi[[out]] <- round(xi_solution[start_index:end_index], 6)
   }
 
-  cat("Solucion para w variables:\n")
-  for (out in seq_len(n_out)) {
-    cat(sprintf(" [%s]\n", paste(mat_w[[out]], collapse=", ")))
-  }
+  svf$solution <- SVFPrimalSolution(mat_w, mat_xi)
 
-  cat("Solucion para xi variables:\n")
-  for (out in seq_len(n_out)) {
-    cat(sprintf(" [%s]\n", paste(mat_xi[[out]], collapse=", ")))
-  }
-
-  return(list(w = mat_w, xi = mat_xi))
+  return(svf$solution)
 
   Rcplex.close()
 }
