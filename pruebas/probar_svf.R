@@ -1,4 +1,4 @@
-library(svfpackage)
+source("R/svf.R")
 
 # Usar datos de prueba
 data <- read.table("data/datos2.txt", header = TRUE, sep = ";")

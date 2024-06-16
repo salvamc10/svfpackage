@@ -2,7 +2,7 @@
 % Please edit documentation in R/grid.R
 \name{GRID}
 \alias{GRID}
-\title{Clase GRID para modelado SVF}
+\title{Clase GRID para modelo SVF}
 \usage{
 GRID(data, inputs, outputs, d)
 }

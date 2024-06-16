@@ -28,48 +28,55 @@ create_SVF <- function(method, inputs, outputs, data, c, eps, d) {
   return(svf)
 }
 
-#' Graficar la frontera de producción
+#' Graficar la frontera del modelo SVF
 #'
-#' Esta función toma un objeto SVF entrenado y grafica la frontera de producción
-#' para un solo input (x1) y un solo output (y1).
+#' Esta función genera un gráfico que muestra los datos originales y la
+#' frontera generada por el modelo SVF.
 #'
-#' @param svf Objeto de clase SVF entrenado.
-#' @param input_col Nombre de la columna del input (x1).
-#' @param output_col Nombre de la columna del output (y1).
-#' @param d Valor fijo para los otros inputs que no se están graficando.
-#' @param n_puntos Número de puntos a utilizar para la estimación.
+#' @param svf_instance Objeto de la clase SVF entrenado.
 #'
-#' @example examples/example_frontier.R
+#' @return Un gráfico que muestra los datos originales y la frontera del modelo SVF.
 #'
-#' @import ggplot2
+#' @importFrom ggplot2 ggplot aes geom_point geom_line labs theme
+#' @importFrom graphics legend lines title
+#' @importFrom utils tail
 #'
 #' @export
-plot_production_frontier <- function(svf, input_col, output_col, d, n_puntos = 100) {
-  if (!(input_col %in% colnames(svf$data)) || !(output_col %in% colnames(svf$data))) {
-    stop("El input o output especificado no existen en los datos.")
-  }
+plot_svf_frontier <- function(svf_instance) {
 
-  x_min <- min(svf$data[[input_col]])
-  x_max <- max(svf$data[[input_col]])
+  x_min <- min(svf_instance$data[[svf_instance$inputs[1]]])
+  x_max <- max(svf_instance$data[[svf_instance$inputs[1]]])
+  x_range <- seq(x_min, x_max, length.out = 500)
 
-  x_seq <- seq(x_min, x_max, length.out = n_puntos)
+  y_predictions <- sapply(x_range, function(x) {
+    if (!is.numeric(x)) {
+      stop("Error: x debe ser numerico")
+    }
 
-  estimations <- sapply(x_seq, function(x) {
-    dmu <- c(x, d)
-    est <- get_estimation.SVF(svf, dmu)
-    return(est)
+    prediction <- get_estimation.SVF(svf_instance, list(x))
+    return(prediction[1])
   })
 
-  plot_data <- data.frame(x = x_seq, y = estimations)
+  x_frontier <- c(0)
+  y_frontier <- c(0)
 
-  p <- ggplot(plot_data, aes(x = x, y = y)) +
-    geom_line(color = "blue", linewidth = 1) +
-    geom_point(data = svf$data, aes_string(x = input_col, y = output_col), color = "red") +
-    labs(title = "Frontera de Produccion", x = input_col, y = output_col) +
-    theme_minimal()
+  for (i in seq_along(x_range)) {
+    x <- x_range[i]
+    y <- y_predictions[i]
+    if (y > tail(y_frontier, 1)) {
+      x_frontier <- c(x_frontier, x - 0.01)
+      y_frontier <- c(y_frontier, tail(y_frontier, 1))
+      x_frontier <- c(x_frontier, x - 0.01)
+      y_frontier <- c(y_frontier, y + 0.20)
+    }
+  }
 
-  print(p)
+  plot(svf_instance$data[[svf_instance$inputs[1]]],
+       svf_instance$data[[svf_instance$outputs[1]]],
+       col = 'blue', pch = 16, xlab = svf_instance$inputs[1], ylab = svf_instance$outputs[1])
+
+  lines(x_frontier, y_frontier, col = 'red')
+
+  legend('topleft', legend = c('Datos originales', 'Frontera SVF'), col = c('blue', 'red'), pch = c(16, NA), lty = c(NA, 1))
+  title(main = 'Frontera generada por el modelo SVF')
 }
-
-# Declarar variables globales
-utils::globalVariables(c("x", "y"))

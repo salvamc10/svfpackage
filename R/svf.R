@@ -42,6 +42,9 @@ get_estimation.SVF <- function(svf, dmu) {
     stop("El numero de inputs de la DMU no coincide con el numero de inputs del problema.")
   }
 
+  # Convertir dmu a numérico si no lo es
+  dmu <- as.numeric(dmu)
+
   dmu_cell <- search_dmu.GRID(svf$grid, dmu)
 
   id_cells <- svf$grid$df_grid$id_cells

@@ -34,23 +34,33 @@ SVFGrid <- function(data, inputs, outputs, d) {
 #'
 #' @export
 create_grid.SVFGrid <- function(grid) {
-  x <- grid$data[, grid$inputs]
+  x <- grid$data[, grid$inputs, drop = FALSE]
   n_dim <- ncol(x)
   knot_list <- list()
   knot_index <- list()
+
   for (col in seq_len(n_dim)) {
     knot_min <- min(x[, col], na.rm = TRUE)
     knot_max <- max(x[, col], na.rm = TRUE)
-    amplitud <- (knot_max - knot_min) / grid$d
     knots <- seq(knot_min, knot_max, length.out = grid$d + 1)
     knot_list[[col]] <- knots
     knot_index[[col]] <- 1:(grid$d + 1)
   }
+
   grid$knot_list <- knot_list
-  id_cells <- expand.grid(knot_index)
-  id_cells <- id_cells[, ncol(id_cells):1]
-  values <- expand.grid(rev(knot_list))
-  values <- values[, ncol(values):1]
+
+  if (n_dim == 1) {
+    id_cells <- as.data.frame(knot_index[[1]])
+    colnames(id_cells) <- grid$inputs
+    values <- as.data.frame(knot_list[[1]])
+    colnames(values) <- grid$inputs
+  } else {
+    id_cells <- expand.grid(knot_index)
+    id_cells <- id_cells[, ncol(id_cells):1]
+    values <- expand.grid(rev(knot_list))
+    values <- values[, ncol(values):1]
+  }
+
   grid$df_grid <- list(id_cells = id_cells, values = values, phi = vector("list", nrow(values)))
   grid <- calculate_df_grid.SVFGrid(grid)
   grid <- calculate_data_grid.SVFGrid(grid)
@@ -112,7 +122,7 @@ calculate_df_grid.SVFGrid <- function(grid) {
   phi_list <- vector("list", n)
   c_cells_list <- vector("list", n)
   for (i in 1:n) {
-    cell <- grid$df_grid$values[i, , drop = FALSE]
+    cell <- as.numeric(grid$df_grid$values[i, , drop = FALSE])
     p <- search_dmu.GRID(grid, cell)
     phi <- calculate_dmu_phi.SVFGrid(grid, p)[[1]]
     c_cells <- search_contiguous_cell(p)
@@ -132,7 +142,7 @@ calculate_df_grid.SVFGrid <- function(grid) {
 #'
 #' @param grid Objeto SVFGrid sobre el cual operar.
 #'
-#' @return 0bjeto grid modificado con los resultados de phi y c_cells añadidos.
+#' @return Objeto grid modificado con los resultados de phi y c_cells añadidos.
 #'
 #' @example examples/example_data.R
 #'

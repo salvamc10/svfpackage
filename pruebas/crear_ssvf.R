@@ -1,14 +1,18 @@
-library(svfpackage)
+source("~/Documents/GitHub/svfpackage/R/svf_solution.R")
+source("~/Documents/GitHub/svfpackage/R/svf_functions.R")
+source("~/Documents/GitHub/svfpackage/R/grid.R")
+source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
+source("~/Documents/GitHub/svfpackage/R/svf.R")
+source("~/Documents/GitHub/svfpackage/R/ssvf.R")
 
 # Definir los datos
 data <- data.frame(
   x1 = c(1, 2, 3, 4),
-  x2 = c(1, 3, 2, 4),
   y1 = c(1, 3, 2, 4)
 )
 
 # Definir listas de inputs, outputs y la cantidad de particiones
-inputs <- c("x1", "x2")
+inputs <- c("x1")
 outputs <- c("y1")
 d <- 2
 

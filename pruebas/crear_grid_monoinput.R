@@ -1,12 +1,15 @@
 source("R/grid.R")
 source("R/svfgrid.R")
 
-# Usar datos de prueba
-data <- read.table("data/datos2.txt", header = TRUE, sep = ";")
+# Definir los datos
+data <- data.frame(
+  x1 = c(1, 2, 3, 4),
+  y1 = c(1, 3, 2, 4)
+)
 
 # Definir listas de inputs, outputs y la cantidad de particiones
-inputs <- c("x1", "x2")
-outputs <- c("y1", "y2")
+inputs <- c("x1")
+outputs <- c("y1")
 d <- 2
 
 # Crear la instancia de la clase SVFGrid y llamar al método create_grid
@@ -18,17 +21,17 @@ cat("knot_list:\n")
 print(grid_obj$knot_list)
 
 # Realizar una búsqueda en el grid para una observación
-dmu <- c(1, 3 )
+dmu <- c(4)
 position <- search_dmu.GRID(grid_obj, dmu)
 print(paste("Posición en el grid: (", paste(position - 1, collapse = ", "), ")", sep = ""))
 
 # Ejemplo de búsqueda de celda contigua
-cell <- c(3, 2)
+cell <- c(3)
 contiguous_cells <- search_contiguous_cell(cell)
 print(paste("Celdas contiguas: (", paste(contiguous_cells, collapse = ", "), ")", sep = ""))
 
 # Ejemplo del calculo de phi para una celda dada
-cell <- c(1, 3)
+cell <- c(1)
 phi_list <- calculate_dmu_phi.SVFGrid(grid_obj, cell)
 print("Vector phi para la celda dada:")
 print(phi_list)

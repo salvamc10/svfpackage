@@ -1,4 +1,4 @@
-#' Clase GRID para modelado SVF
+#' Clase GRID para modelo SVF
 #'
 #' Esta clase representa un grid sobre el que se realiza el modelo SVF.
 #' Un grid es una partición del espacio de los inputs dividido por celdas.

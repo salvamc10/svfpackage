@@ -1,14 +1,18 @@
 source("R/grid.R")
 library(ggplot2)
 
-# Usar datos de prueba
-data <- read.table("data/datos2.txt", header = TRUE, sep = ";")
+# Definir los datos
+data <- data.frame(
+  x1 = c(1, 2, 3, 4),
+  y1 = c(1, 3, 2, 4)
+)
 
-# Crear una instancia de GRID y usar sus métodos
-inputs <- c("x1", "x2")
-outputs <- c("y1", "y2")
+# Definir listas de inputs, outputs y la cantidad de particiones
+inputs <- c("x1")
+outputs <- c("y1")
 d <- 2
 
+# Crear instancia de GRID
 grid_instance <- GRID(data, inputs, outputs, d)
 
 print(grid_instance)
@@ -17,8 +21,9 @@ print(grid_instance)
 result <- transformation(3, 2)
 cat("Resultado de la transformación:", result, "\n")
 
-grid_instance$knot_list <- list(list(1, 2.5, 4), list(1, 2, 3))
-dmu <- c(3, 4)
+# Definir knot_list como lista de listas
+grid_instance$knot_list <- list(c(1, 2.5, 4))
+dmu <- c(3)
 position <- search_dmu.GRID(grid_instance, dmu)
 
 print(paste("Posición en el grid: (", paste(position - 1, collapse = ", "), ")", sep = ""))
@@ -29,11 +34,13 @@ plot_GRID <- function(grid_instance, data, dmu) {
   num_inputs <- length(grid_instance$inputs)
 
   if (num_inputs == 1) {
+    # Para un solo input, crear una segunda dimensión ficticia
     x_grid <- unlist(grid_instance$knot_list[[1]])
-    y_grid <- rep(0, length(x_grid))
+    y_grid <- rep(0, length(x_grid))  # Dimensión ficticia
     data_df <- data.frame(x = data[[grid_instance$inputs[1]]], y = rep(0, nrow(data)))
     dmu_df <- data.frame(x = dmu[[1]], y = 0)
   } else {
+    # Para múltiples inputs
     x_grid <- unlist(grid_instance$knot_list[[1]])
     y_grid <- unlist(grid_instance$knot_list[[2]])
     data_df <- data.frame(x = data[[grid_instance$inputs[1]]], y = data[[grid_instance$inputs[2]]])

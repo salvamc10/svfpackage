@@ -10,7 +10,7 @@ calculate_data_grid.SVFGrid(grid)
 \item{grid}{Objeto SVFGrid sobre el cual operar.}
 }
 \value{
-0bjeto grid modificado con los resultados de phi y c_cells añadidos.
+Objeto grid modificado con los resultados de phi y c_cells añadidos.
 }
 \description{
 Esta función procesa cada observación del data_grid basándose en las columnas especificadas en inputs,
