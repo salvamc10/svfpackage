@@ -1,8 +1,8 @@
-source("~/Documents/GitHub/svfpackage/R/svf_solution.R")
-source("~/Documents/GitHub/svfpackage/R/grid.R")
-source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
-source("~/Documents/GitHub/svfpackage/R/svf.R")
-source("~/Documents/GitHub/svfpackage/R/ssvf.R")
+source("R/svf_solution.R")
+source("R/grid.R")
+source("R/svfgrid.R")
+source("R/svf.R")
+source("R/ssvf.R")
 
 # Definir los datos
 data <- data.frame(

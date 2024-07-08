@@ -1,24 +1,21 @@
-source("~/Documents/GitHub/svfpackage/R/svf_solution.R")
-source("~/Documents/GitHub/svfpackage/R/svf_functions.R")
-source("~/Documents/GitHub/svfpackage/R/grid.R")
-source("~/Documents/GitHub/svfpackage/R/svfgrid.R")
-source("~/Documents/GitHub/svfpackage/R/svf.R")
-source("~/Documents/GitHub/svfpackage/R/ssvf.R")
+source("R/svf_solution.R")
+source("R/svf_functions.R")
+source("R/grid.R")
+source("R/svfgrid.R")
+source("R/svf.R")
+source("R/ssvf.R")
 
 # Definir los datos
-data <- data.frame(
-  x1 = c(1, 2, 3, 4),
-  y1 = c(1, 3, 2, 4)
-)
+data <- X63_B1_40
 
 # Definir listas de inputs, outputs y la cantidad de particiones
 inputs <- c("x1")
-outputs <- c("y1")
-d <- 3
+outputs <- c("y")
+d <- 39
 
 # Parámetros iniciales del modelo SVF
 C <- 1
-eps <- 0
+eps <- 0.05
 method <- 'SSVF'
 
 # Instanciar y entrenar el modelo SVF
@@ -32,20 +29,5 @@ svf_solution <- solve(svf_instance)
 print(svf_solution$w)
 print(svf_solution$xi)
 
-# Probar la función get_estimation
-estimations <- list(
-  get_estimation.SVF(svf_instance, c(1)),
-  get_estimation.SVF(svf_instance, c(3)),
-  get_estimation.SVF(svf_instance, c(1)),
-  get_estimation.SVF(svf_instance, c(7)),
-  get_estimation.SVF(svf_instance, c(2)),
-  get_estimation.SVF(svf_instance, c(3))
-)
-
-# Imprimir las estimaciones
-for (i in seq_along(estimations)) {
-  cat(sprintf("Estimación %d: %s\n", i + 1, estimations[[i]]))
-}
-
 # Usar la función para graficar la frontera de producción
-plot_svf_frontier(svf_instance)
+plot_frontier(svf_instance)

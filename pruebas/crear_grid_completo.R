@@ -46,17 +46,4 @@ print_df_grid <- function(df_grid) {
 
 print_df_grid(grid_obj$df_grid)
 
-print_data_grid <- function(data_grid) {
-  print("Data grid completo:")
-  temp_df <- data.frame(
-    x1 = data_grid$x1,
-    x2 = data_grid$x2,
-    phi = sapply(data_grid$phi, function(phi) sprintf("[%s]", paste(phi, collapse = " "))),
-    c_cells = sapply(data_grid$c_cells, function(cells) if (length(cells) > 0) {
-      paste(sapply(cells, function(cell) paste0("(", paste(cell, collapse = ", "), ")")), collapse = " ")
-    } else "[]")
-  )
-  print(temp_df)
-}
-
-print_data_grid(grid_obj$data_grid)
+print(grid_obj$data_grid)
