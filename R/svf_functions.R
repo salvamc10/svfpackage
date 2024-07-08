@@ -33,50 +33,58 @@ create_SVF <- function(method, inputs, outputs, data, c, eps, d) {
 #' Esta función genera un gráfico que muestra los datos originales y la
 #' frontera generada por el modelo SVF.
 #'
-#' @param svf_instance Objeto de la clase SVF entrenado.
+#' @import ggplot2
+#' @importFrom utils tail
+#'
+#' @param svf Objeto de la clase SVF entrenado.
 #'
 #' @return Un gráfico que muestra los datos originales y la frontera del modelo SVF.
 #'
-#' @importFrom ggplot2 ggplot aes geom_point geom_line labs theme
-#' @importFrom graphics legend lines title
-#' @importFrom utils tail
-#'
 #' @export
-plot_svf_frontier <- function(svf_instance) {
+plot_frontier <- function(svf) {
 
-  x_min <- min(svf_instance$data[[svf_instance$inputs[1]]])
-  x_max <- max(svf_instance$data[[svf_instance$inputs[1]]])
-  x_range <- seq(x_min, x_max, length.out = 500)
+  inputs <- svf$inputs
+  outputs <- svf$outputs
+  data <- svf$data
+  eps <- svf$eps
 
-  y_predictions <- sapply(x_range, function(x) {
-    if (!is.numeric(x)) {
-      stop("Error: x debe ser numerico")
-    }
+  x <- c(0)
+  y <- c(0)
 
-    prediction <- get_estimation.SVF(svf_instance, list(x))
-    return(prediction[1])
-  })
-
-  x_frontier <- c(0)
-  y_frontier <- c(0)
-
-  for (i in seq_along(x_range)) {
-    x <- x_range[i]
-    y <- y_predictions[i]
-    if (y > tail(y_frontier, 1)) {
-      x_frontier <- c(x_frontier, x - 0.01)
-      y_frontier <- c(y_frontier, tail(y_frontier, 1))
-      x_frontier <- c(x_frontier, x - 0.01)
-      y_frontier <- c(y_frontier, y + 0.20)
-    }
+  if (length(inputs) != 1 || length(outputs) != 1) {
+    stop("Esta funcion grafica solo para un input y un output.")
   }
 
-  plot(svf_instance$data[[svf_instance$inputs[1]]],
-       svf_instance$data[[svf_instance$outputs[1]]],
-       col = 'blue', pch = 16, xlab = svf_instance$inputs[1], ylab = svf_instance$outputs[1])
+  grid_points <- data.frame(x = seq(min(data[[inputs]]), max(data[[inputs]]), length.out = 100))
 
-  lines(x_frontier, y_frontier, col = 'red')
+  grid_points$y <- sapply(grid_points$x, function(x) {
+    dmu <- c(x)
+    estimation <- get_estimation.SVF(svf, dmu)
+    return(estimation)
+  })
 
-  legend('topleft', legend = c('Datos originales', 'Frontera SVF'), col = c('blue', 'red'), pch = c(16, NA), lty = c(NA, 1))
-  title(main = 'Frontera generada por el modelo SVF')
+  step_points <- data.frame(x = numeric(0), y = numeric(0))
+
+  step_points <- rbind(step_points, data.frame(x = min(data[[inputs]]), y = eps))
+  step_points <- rbind(step_points, data.frame(x = min(data[[inputs]]), y = grid_points$y[1] + eps))
+
+  for (i in 1:(nrow(grid_points) - 1)) {
+    step_points <- rbind(step_points, data.frame(x = grid_points$x[i], y = grid_points$y[i] + eps))
+    if (grid_points$y[i] != grid_points$y[i + 1]) {
+      step_points <- rbind(step_points, data.frame(x = grid_points$x[i], y = grid_points$y[i + 1] + eps))
+    }
+    step_points <- rbind(step_points, data.frame(x = grid_points$x[i + 1], y = grid_points$y[i + 1] + eps))
+  }
+
+  max_x <- max(data[[inputs]]) + 0.5
+  step_points <- rbind(step_points, data.frame(x = max_x, y = tail(step_points$y, 1)))
+
+  p <- ggplot() +
+    geom_point(data = data, aes_string(x = inputs, y = outputs), color = "blue", size = 2) +
+    geom_line(data = step_points, aes(x = x, y = y), color = "red", linewidth = 1) +
+    labs(x = inputs, y = outputs, title = "Frontera del modelo SVF") +
+    theme_minimal() +
+    scale_x_continuous(limits = c(min(data[[inputs]]), max_x))
+
+  return(p)
 }
